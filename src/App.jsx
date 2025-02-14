@@ -55,6 +55,14 @@ function App() {
     }
   }, []);
 
+  const getApiKey = () => {
+    const key = import.meta.env.VITE_OPENAI_API_KEY || process.env.VITE_OPENAI_API_KEY;
+    if (!key) {
+      throw new Error('OpenAI API key is not configured');
+    }
+    return key.trim();
+  };
+
   const updateTokenCount = (newTokens) => {
     const updatedCount = tokenCount + newTokens;
     setTokenCount(updatedCount);
@@ -140,20 +148,14 @@ function App() {
     setError(null);
     setIsLoading(true);
     
-    if (tokenCount >= MAX_TOKENS_PER_HOUR) {
-      setError('Rate limit exceeded. Please try again in an hour.');
-      setIsLoading(false);
-      return;
-    }
-
-    // Verify API key before making request
-    if (!import.meta.env.VITE_OPENAI_API_KEY) {
-      setError('OpenAI API key is missing');
-      setIsLoading(false);
-      return;
-    }
-
     try {
+      const apiKey = getApiKey();
+      if (tokenCount >= MAX_TOKENS_PER_HOUR) {
+        setError('Rate limit exceeded. Please try again in an hour.');
+        setIsLoading(false);
+        return;
+      }
+
       let base64Image = null;
       if (image) {
         base64Image = image.replace(/^data:image\/[a-z]+;base64,/, "");
@@ -223,7 +225,7 @@ function App() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY.trim()}`,
+          'Authorization': `Bearer ${apiKey}`,
         },
         body: JSON.stringify(payload)
       });
@@ -257,8 +259,8 @@ function App() {
         updateTokenCount(data.usage.total_tokens);
       }
     } catch (error) {
-      console.error('Full error:', error);
-      setError(error.message || 'Failed to connect to OpenAI');
+      console.error('API Error:', error);
+      setError(error.message || 'Failed to connect to OpenAI API');
       setMessages([...messages,
         { role: 'user', content: message, image: image },
         { role: 'assistant', content: `Error: ${error.message}. Please try again with a smaller image or different question.` }

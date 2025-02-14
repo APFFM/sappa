@@ -36,11 +36,12 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build
-        run: npm run build
+        run: |
+          echo "VITE_OPENAI_API_KEY=${{ secrets.VITE_OPENAI_API_KEY }}" >> .env
+          echo "VITE_ELEVEN_LABS_KEY=${{ secrets.VITE_ELEVEN_LABS_KEY }}" >> .env
+          npm run build
         env:
           NODE_ENV: production
-          VITE_OPENAI_API_KEY: ${{ secrets.VITE_OPENAI_API_KEY }}
-          VITE_ELEVEN_LABS_KEY: ${{ secrets.VITE_ELEVEN_LABS_KEY }}
       - name: Setup Pages
         uses: actions/configure-pages@v4
         with:

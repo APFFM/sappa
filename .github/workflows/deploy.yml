@@ -38,6 +38,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
+          NODE_ENV: production
           VITE_OPENAI_API_KEY: ${{ secrets.VITE_OPENAI_API_KEY }}
           VITE_ELEVEN_LABS_KEY: ${{ secrets.VITE_ELEVEN_LABS_KEY }}
       - name: Setup Pages

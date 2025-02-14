@@ -1,0 +1,80 @@
+.audioContainer {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.playButton {
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(255, 105, 180, 0.1);
+}
+
+.playButton:hover {
+  transform: scale(1.1);
+  background: #fff5f5;
+}
+
+.playButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.playButton[title*="summary"] {
+  background: #fff5f5;
+}
+
+.playButton[title*="summary"]:hover {
+  background: #ffe4e8;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.playButton:disabled {
+  animation: pulse 1s infinite;
+}
+
+.voiceToggle {
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(255, 105, 180, 0.1);
+}
+
+.voiceToggle:hover {
+  transform: scale(1.1);
+}
+
+.voiceToggle.eleven {
+  background: #ffe4e8;
+}
+
+.voiceToggle.openai {
+  background: #e4f4ff;
+}

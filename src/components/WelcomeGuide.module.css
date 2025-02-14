@@ -1,0 +1,54 @@
+.guide {
+  color: #444;
+}
+
+.guide h2 {
+  color: #ff69b4;
+  font-size: 1.3em;
+  margin-bottom: 15px;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.step {
+  padding: 10px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(255, 105, 180, 0.05);
+}
+
+.emoji {
+  font-size: 1.5em;
+  margin-right: 8px;
+}
+
+.step h3 {
+  color: #ff69b4;
+  font-size: 1em;
+  margin: 5px 0;
+}
+
+.step p {
+  font-size: 0.9em;
+  margin: 5px 0;
+}
+
+.tips {
+  margin-top: 20px;
+  padding: 15px;
+  background: #fff5f5;
+  border-radius: 8px;
+}
+
+.tips ul {
+  padding-left: 20px;
+  font-size: 0.9em;
+}
+
+.tips li {
+  margin: 5px 0;
+}

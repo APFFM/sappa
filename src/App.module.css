@@ -1,0 +1,148 @@
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 20px;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #fff5f5 0%, #fff8f8 50%, #fff5f5 100%);
+  min-height: 100vh;
+  box-shadow: 0 0 20px rgba(255, 105, 180, 0.1);
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  text-align: center;
+  color: #ff69b4;
+  margin-bottom: 30px;
+  font-size: 2.5em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  letter-spacing: 1px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.sparkles {
+  color: #ffb6c1;
+  margin: 0 10px;
+  display: inline-block;
+  animation: sparkle 1.5s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.8; }
+}
+
+.error {
+  background: #ffe4e6;
+  color: #e11d48;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.tokenInfo {
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+  margin-top: 10px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 250px minmax(600px, 800px) 250px;
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  justify-content: center;
+}
+
+.mainContent {
+  width: 100%;
+  min-width: 600px;
+  max-width: 800px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 20px;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+}
+
+.sidebar {
+  width: 250px;
+  position: sticky;
+  top: 20px;
+  height: fit-content;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(255, 105, 180, 0.1);
+  backdrop-filter: blur(8px);
+}
+
+@media (max-width: 1400px) {
+  .layout {
+    grid-template-columns: 220px minmax(500px, 700px) 220px;
+    gap: 20px;
+  }
+
+  .mainContent {
+    min-width: 500px;
+  }
+
+  .sidebar {
+    width: 220px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .layout {
+    grid-template-columns: 200px minmax(450px, 600px) 200px;
+    gap: 15px;
+  }
+
+  .sidebar {
+    width: 200px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .layout {
+    grid-template-columns: 1fr;
+    max-width: 800px;
+  }
+
+  .mainContent {
+    min-width: unset;
+  }
+
+  .sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 5px;
+  }
+
+  h1 {
+    font-size: 1.5em;
+  }
+}

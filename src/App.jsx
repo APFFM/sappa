@@ -47,6 +47,12 @@ function App() {
     } else {
       setTokenCount(parseInt(localStorage.getItem('tokenCount') || '0'));
     }
+
+    // Add API key verification
+    if (!import.meta.env.VITE_OPENAI_API_KEY) {
+      setError('OpenAI API key is missing. Please check your environment variables.');
+      console.error('OpenAI API key is not set');
+    }
   }, []);
 
   const updateTokenCount = (newTokens) => {
@@ -140,6 +146,13 @@ function App() {
       return;
     }
 
+    // Verify API key before making request
+    if (!import.meta.env.VITE_OPENAI_API_KEY) {
+      setError('OpenAI API key is missing');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       let base64Image = null;
       if (image) {
@@ -210,7 +223,7 @@ function App() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`
+          'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY.trim()}`,
         },
         body: JSON.stringify(payload)
       });
@@ -244,8 +257,8 @@ function App() {
         updateTokenCount(data.usage.total_tokens);
       }
     } catch (error) {
-      console.error('Error details:', error);
-      setError(error.message);
+      console.error('Full error:', error);
+      setError(error.message || 'Failed to connect to OpenAI');
       setMessages([...messages,
         { role: 'user', content: message, image: image },
         { role: 'assistant', content: `Error: ${error.message}. Please try again with a smaller image or different question.` }

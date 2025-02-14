@@ -4,17 +4,24 @@ on:
   push:
     branches: ['main']
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
+  deployments: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
 
 jobs:
   deploy:
     environment:
-      name: 'GitHub Pages'
+      name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-up: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,6 +39,8 @@ jobs:
           VITE_ELEVEN_LABS_KEY: ${{ secrets.VITE_ELEVEN_LABS_KEY }}
       - name: Setup Pages
         uses: actions/configure-pages@v4
+        with:
+          enablement: true
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

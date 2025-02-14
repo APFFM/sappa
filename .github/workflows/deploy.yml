@@ -22,6 +22,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    env:
+      VITE_OPENAI_API_KEY: ${{ secrets.VITE_OPENAI_API_KEY }}
+      VITE_ELEVEN_LABS_KEY: ${{ secrets.VITE_ELEVEN_LABS_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -285,11 +285,12 @@ function App() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1>
+        <h1 data-text="Beauty Advisor">
           <span className={styles.sparkles}>✨</span>
           Beauty Advisor
           <span className={styles.sparkles}>✨</span>
         </h1>
+        <p>Your Personal AI Beauty Expert</p>
       </div>
       <div className={styles.layout}>
         <aside className={styles.sidebar}>

@@ -1,80 +1,199 @@
+/* ==================== AUDIO CONTAINER ==================== */
 .audioContainer {
   display: inline-flex;
   align-items: center;
-  margin-left: 10px;
+  gap: 10px;
+  margin-left: 12px;
+  margin-top: 10px;
 }
 
+/* ==================== PLAY BUTTON ==================== */
 .playButton {
-  background: none;
-  border: none;
-  font-size: 1.2em;
+  background: linear-gradient(135deg, #ffffff 0%, #fffbfc 100%);
+  border: 2px solid rgba(244, 167, 192, 0.3);
+  font-size: 1.3em;
   cursor: pointer;
-  padding: 5px;
+  padding: 8px;
   border-radius: 50%;
-  transition: all 0.2s;
-  width: 32px;
-  height: 32px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
-  box-shadow: 0 2px 4px rgba(255, 105, 180, 0.1);
+  box-shadow: 0 3px 10px rgba(244, 167, 192, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.playButton::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffd6e8 0%, #ffc4d6 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.playButton:hover::before {
+  opacity: 1;
 }
 
 .playButton:hover {
-  transform: scale(1.1);
-  background: #fff5f5;
+  transform: scale(1.12);
+  border-color: rgba(244, 167, 192, 0.5);
+  box-shadow: 
+    0 6px 20px rgba(244, 167, 192, 0.35),
+    0 0 15px rgba(244, 167, 192, 0.2);
+}
+
+.playButton:active {
+  transform: scale(1.05);
 }
 
 .playButton:disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: not-allowed;
+  animation: audioPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes audioPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 3px 10px rgba(244, 167, 192, 0.2);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 6px 20px rgba(244, 167, 192, 0.4);
+  }
 }
 
 .playButton[title*="summary"] {
-  background: #fff5f5;
+  background: linear-gradient(135deg, #fff9fb 0%, #fff5f7 100%);
+  border-color: rgba(244, 167, 192, 0.4);
 }
 
 .playButton[title*="summary"]:hover {
-  background: #ffe4e8;
+  background: linear-gradient(135deg, #ffeef5 0%, #ffe5f0 100%);
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+/* Make button content position relative so it appears above ::before */
+.playButton > * {
+  position: relative;
+  z-index: 1;
 }
 
-.playButton:disabled {
-  animation: pulse 1s infinite;
-}
-
+/* ==================== VOICE TOGGLE ==================== */
 .voiceToggle {
-  background: none;
-  border: none;
+  background: linear-gradient(135deg, #ffffff 0%, #fffbfc 100%);
+  border: 2px solid rgba(244, 167, 192, 0.3);
   font-size: 1.2em;
   cursor: pointer;
-  padding: 5px;
+  padding: 8px;
   border-radius: 50%;
-  transition: all 0.2s;
-  width: 32px;
-  height: 32px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 8px;
-  background: #fff;
-  box-shadow: 0 2px 4px rgba(255, 105, 180, 0.1);
+  box-shadow: 0 3px 10px rgba(244, 167, 192, 0.15);
+  position: relative;
 }
 
 .voiceToggle:hover {
-  transform: scale(1.1);
+  transform: scale(1.1) rotate(-5deg);
+  box-shadow: 0 6px 16px rgba(244, 167, 192, 0.3);
+}
+
+.voiceToggle:active {
+  transform: scale(1.05) rotate(0deg);
 }
 
 .voiceToggle.eleven {
-  background: #ffe4e8;
+  background: linear-gradient(135deg, #ffeef5 0%, #ffe5f0 100%);
+  border-color: rgba(244, 167, 192, 0.5);
+}
+
+.voiceToggle.eleven:hover {
+  background: linear-gradient(135deg, #ffe5f0 0%, #ffd6e8 100%);
 }
 
 .voiceToggle.openai {
-  background: #e4f4ff;
+  background: linear-gradient(135deg, #e8f4ff 0%, #d6ebff 100%);
+  border-color: rgba(166, 200, 255, 0.5);
+}
+
+.voiceToggle.openai:hover {
+  background: linear-gradient(135deg, #d6ebff 0%, #c4e0ff 100%);
+}
+
+/* ==================== WAVEFORM ANIMATION (when playing) ==================== */
+.playButton[aria-label="pause"]::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent 0%,
+    rgba(244, 167, 192, 0.8) 25%,
+    rgba(244, 167, 192, 0.8) 75%,
+    transparent 100%
+  );
+  border-radius: 2px;
+  animation: waveform 1s ease-in-out infinite;
+}
+
+@keyframes waveform {
+  0%, 100% {
+    width: 60%;
+    opacity: 0.6;
+  }
+  50% {
+    width: 85%;
+    opacity: 1;
+  }
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .playButton {
+    width: 38px;
+    height: 38px;
+    font-size: 1.2em;
+  }
+
+  .voiceToggle {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1em;
+  }
+
+  .audioContainer {
+    gap: 8px;
+    margin-left: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .playButton {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1em;
+  }
+
+  .voiceToggle {
+    width: 34px;
+    height: 34px;
+    font-size: 1em;
+  }
+
+  .audioContainer {
+    gap: 6px;
+    margin-left: 8px;
+  }
 }

@@ -1,22 +1,210 @@
+/* ==================== CONTAINER ==================== */
 .loadingContainer {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 15px;
-  color: #ff69b4;
+  justify-content: center;
+  gap: 20px;
+  padding: 30px;
+  margin: 20px 0;
+  position: relative;
+}
+
+/* ==================== SPARKLES ANIMATION ==================== */
+.sparkles {
+  display: flex;
+  gap: 12px;
+  position: relative;
 }
 
 .sparkle {
-  animation: spin 2s linear infinite;
-  font-size: 20px;
+  font-size: 32px;
+  animation: sparkleFloat 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(244, 167, 192, 0.6));
+  position: relative;
 }
 
+.sparkle:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.sparkle:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.sparkle:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+@keyframes sparkleFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1) rotate(0deg);
+    opacity: 0.8;
+  }
+  25% {
+    transform: translateY(-15px) scale(1.2) rotate(90deg);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-20px) scale(1) rotate(180deg);
+    opacity: 0.8;
+  }
+  75% {
+    transform: translateY(-15px) scale(1.2) rotate(270deg);
+    opacity: 1;
+  }
+}
+
+/* ==================== SHIMMER CIRCLE ==================== */
+.shimmerCircle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    rgba(244, 167, 192, 0.2) 0%,
+    rgba(255, 214, 232, 0.4) 50%,
+    rgba(244, 167, 192, 0.2) 100%
+  );
+  background-size: 200% 200%;
+  animation: shimmerPulse 2s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 0 20px rgba(244, 167, 192, 0.4),
+    inset 0 0 20px rgba(255, 255, 255, 0.5);
+  position: relative;
+}
+
+.shimmerCircle::before {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 249, 252, 0.9)
+  );
+  animation: shimmerRotate 3s linear infinite;
+}
+
+@keyframes shimmerPulse {
+  0%, 100% {
+    transform: scale(1);
+    background-position: 0% 50%;
+    box-shadow: 
+      0 0 20px rgba(244, 167, 192, 0.4),
+      inset 0 0 20px rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    transform: scale(1.1);
+    background-position: 100% 50%;
+    box-shadow: 
+      0 0 30px rgba(244, 167, 192, 0.6),
+      inset 0 0 30px rgba(255, 255, 255, 0.7);
+  }
+}
+
+@keyframes shimmerRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==================== TEXT ==================== */
 .text {
-  font-size: 14px;
-  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  color: #9d7b8c;
+  letter-spacing: 0.5px;
+  animation: textFade 2s ease-in-out infinite;
+  text-align: center;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+@keyframes textFade {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ==================== DOTS ANIMATION ==================== */
+.dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f4a7c0 0%, #e58fb1 100%);
+  animation: dotBounce 1.4s ease-in-out infinite;
+}
+
+.dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dotBounce {
+  0%, 80%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+  40% {
+    transform: translateY(-12px) scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .sparkle {
+    font-size: 28px;
+  }
+
+  .shimmerCircle {
+    width: 70px;
+    height: 70px;
+  }
+
+  .text {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sparkle {
+    font-size: 24px;
+  }
+
+  .shimmerCircle {
+    width: 60px;
+    height: 60px;
+  }
+
+  .text {
+    font-size: 14px;
+  }
+
+  .loadingContainer {
+    padding: 20px;
+  }
 }

@@ -1,107 +1,230 @@
+/* ==================== CHAT CONTAINER ==================== */
 .chat {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
   margin: 20px 0;
+  padding: 5px;
 }
 
+/* ==================== MESSAGE BASE ==================== */
 .message {
-  padding: 15px 20px;
-  border-radius: 15px;
-  max-width: 80%;
-  margin: 8px 0;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-.user {
-  background: #ffd1dc;
-  align-self: flex-end;
-  color: #4a4a4a;
-  border-bottom-right-radius: 5px;
-}
-
-.assistant {
-  background: #fff;
-  align-self: flex-start;
-  color: #2c2c2c;
-  border-bottom-left-radius: 5px;
-  border: 1px solid #ffe4e1;
-}
-
-.icon {
-  font-size: 12px;
-  margin-right: 8px;
-  opacity: 0.7;
-}
-
-.imagePreview {
-  max-width: 200px;
-  border-radius: 10px;
-  margin-top: 10px;
-}
-
-.contentWrapper {
-  white-space: pre-wrap;
-  line-height: 1.8;
-  font-size: 15px;
-}
-
-.contentWrapper strong {
-  color: #ff69b4;
-}
-
-.heading {
-  font-size: 1.1em;
-  font-weight: 600;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 24px;
+  border-radius: 20px;
+  max-width: 85%;
   margin: 10px 0;
-  color: #ff69b4;
-}
-
-.message.assistant {
-  background: linear-gradient(to right, #fff, #fff8f8);
-  border: 1px solid #ffe4e1;
-  padding: 20px;
-  line-height: 1.6;
   font-size: 15px;
-  letter-spacing: 0.3px;
-  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.1);
+  line-height: 1.7;
+  position: relative;
+  animation: messageSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
 }
 
-.message.assistant ul {
-  margin: 0;
-  padding-left: 20px;
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.message.assistant li {
-  margin: 8px 0;
+/* ==================== USER MESSAGE ==================== */
+.user {
+  background: linear-gradient(135deg, #ffd6e8 0%, #ffc4d6 100%);
+  align-self: flex-end;
+  color: #5a3a4d;
+  border-bottom-right-radius: 6px;
+  box-shadow: 
+    0 4px 12px rgba(255, 182, 214, 0.25),
+    0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  flex-direction: row-reverse;
 }
 
-.message.assistant p {
-  margin: 1em 0;
+.user:hover {
+  box-shadow: 
+    0 6px 16px rgba(255, 182, 214, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
 }
 
-.message.assistant • {
-  display: block;
-  margin: 0.5em 0 0.5em 1em;
+/* ==================== ASSISTANT MESSAGE ==================== */
+.assistant {
+  background: linear-gradient(135deg, #ffffff 0%, #fffbfc 100%);
+  align-self: flex-start;
+  color: #4a3545;
+  border-bottom-left-radius: 6px;
+  border: 1px solid rgba(244, 167, 192, 0.3);
+  box-shadow: 
+    0 4px 16px rgba(244, 167, 192, 0.15),
+    0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.assistant:hover {
+  box-shadow: 
+    0 6px 20px rgba(244, 167, 192, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+/* ==================== AVATAR/ICON ==================== */
+.icon {
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: relative;
 }
 
-.message.assistant • ::before {
-  content: "•";
-  position: absolute;
-  left: 0;
+.user .icon {
+  background: linear-gradient(135deg, #ffb6d6 0%, #ff9ec4 100%);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.assistant .icon {
+  background: linear-gradient(135deg, #ffe5f0 0%, #ffd6e8 100%);
+  border: 2px solid rgba(244, 167, 192, 0.5);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(244, 167, 192, 0.3);
+  }
+  50% {
+    box-shadow: 0 2px 12px rgba(244, 167, 192, 0.5);
+  }
+}
+
+/* ==================== CONTENT WRAPPER ==================== */
+.contentWrapper {
+  white-space: pre-wrap;
+  line-height: 1.8;
+  font-size: 15.5px;
+  flex: 1;
+  color: inherit;
+  letter-spacing: 0.3px;
+}
+
+.contentWrapper strong {
+  color: #d4698e;
+  font-weight: 600;
+}
+
+/* ==================== IMAGE PREVIEW ==================== */
+.imagePreview {
+  max-width: 280px;
+  border-radius: 16px;
+  margin: 12px 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.imagePreview:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* ==================== ASSISTANT MESSAGE ENHANCEMENTS ==================== */
+.message.assistant ul {
+  margin: 10px 0;
+  padding-left: 24px;
+}
+
+.message.assistant li {
+  margin: 10px 0;
+  position: relative;
+  padding-left: 8px;
+}
+
+.message.assistant li::marker {
+  color: #f4a7c0;
+}
+
+.message.assistant p {
+  margin: 1.2em 0;
 }
 
 .message.assistant [class*="emoji"] {
-  font-size: 1.2em;
-  margin-right: 0.5em;
+  font-size: 1.3em;
+  margin-right: 0.6em;
   margin-top: 1em;
   display: inline-block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
 .emoji {
-  font-size: 1.2em;
-  margin-right: 8px;
+  font-size: 1.3em;
+  margin-right: 10px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+/* ==================== HEADING STYLES ==================== */
+.heading {
+  font-size: 1.15em;
+  font-weight: 600;
+  margin: 12px 0 8px 0;
+  color: #d4698e;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.3px;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .message {
+    max-width: 90%;
+    padding: 16px 18px;
+    gap: 10px;
+  }
+
+  .icon {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+
+  .contentWrapper {
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+
+  .imagePreview {
+    max-width: 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  .message {
+    max-width: 95%;
+    padding: 14px 16px;
+    gap: 8px;
+  }
+
+  .icon {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  .contentWrapper {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .imagePreview {
+    max-width: 180px;
+  }
 }

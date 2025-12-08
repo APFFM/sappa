@@ -1,116 +1,315 @@
+/* ==================== FORM CONTAINER ==================== */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 15px;
+  margin-top: 25px;
+  position: relative;
 }
 
+/* ==================== INPUT GROUP ==================== */
 .inputGroup {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
   width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 8px;
+  border-radius: 24px;
+  box-shadow: 
+    0 4px 20px rgba(244, 167, 192, 0.2),
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
 }
 
+.inputGroup:hover {
+  box-shadow: 
+    0 6px 24px rgba(244, 167, 192, 0.25),
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+.inputGroup:focus-within {
+  box-shadow: 
+    0 8px 32px rgba(244, 167, 192, 0.3),
+    0 2px 6px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 0 0 3px rgba(244, 167, 192, 0.2);
+  border-color: rgba(244, 167, 192, 0.6);
+}
+
+/* ==================== TEXT INPUT ==================== */
 .form input[type="text"] {
   flex: 1;
-  padding: 12px;
+  padding: 14px 18px;
   font-size: 16px;
-  border: 2px solid #ffd1dc;
-  border-radius: 8px;
+  border: none;
+  border-radius: 18px;
   outline: none;
+  background: transparent;
+  color: #4a3545;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.form input[type="text"]::placeholder {
+  color: #b89daa;
+  font-weight: 400;
 }
 
 .form input[type="text"]:focus {
-  border-color: #ff69b4;
+  background: rgba(255, 252, 254, 0.8);
 }
 
+/* ==================== BUTTONS ==================== */
 .form button {
-  padding: 10px;
-  background: #ff69b4;
+  padding: 12px;
+  background: linear-gradient(135deg, #f4a7c0 0%, #e58fb1 100%);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 16px;
   cursor: pointer;
+  font-size: 18px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(244, 167, 192, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.form button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.5s, height 0.5s;
+}
+
+.form button:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(244, 167, 192, 0.45);
+}
+
+.form button:active {
+  transform: translateY(0);
 }
 
 .form button:disabled {
-  background: #ccc;
+  background: linear-gradient(135deg, #e6d4db 0%, #d4c0ca 100%);
+  cursor: not-allowed;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* ==================== IMAGE UPLOAD ==================== */
 .imageUpload {
-  padding: 8px;
+  padding: 10px;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 26px;
   opacity: 0.7;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ffeef5 0%, #ffe5f0 100%);
+  width: 46px;
+  height: 46px;
+  position: relative;
 }
 
 .imageUpload:hover {
   opacity: 1;
-  transform: scale(1.1);
+  transform: scale(1.08) rotate(-5deg);
+  background: linear-gradient(135deg, #ffe5f0 0%, #ffd6e8 100%);
+  box-shadow: 0 4px 12px rgba(244, 167, 192, 0.3);
+}
+
+.imageUpload:active {
+  transform: scale(0.95) rotate(0deg);
 }
 
 .imageUpload input {
   display: none;
 }
 
+/* ==================== IMAGE PREVIEW ==================== */
 .imagePreview {
   position: relative;
-  margin-bottom: 10px;
-  padding: 8px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 15px;
+  padding: 12px;
+  background: linear-gradient(135deg, #ffffff 0%, #fffbfc 100%);
+  border-radius: 16px;
+  box-shadow: 
+    0 4px 16px rgba(244, 167, 192, 0.2),
+    0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(244, 167, 192, 0.3);
+  animation: fadeInScale 0.3s ease-out;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .imagePreview img {
-  max-width: 150px;
-  border-radius: 8px;
+  max-width: 180px;
+  border-radius: 12px;
   display: block;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .removeImage {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 24px;
-  height: 24px;
-  background: #ff69b4;
+  top: -10px;
+  right: -10px;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #f4a7c0 0%, #e58fb1 100%);
   color: white;
-  border: none;
+  border: 2px solid white;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  font-size: 16px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(244, 167, 192, 0.4);
+  transition: all 0.3s ease;
 }
 
+.removeImage:hover {
+  transform: scale(1.15) rotate(90deg);
+  background: linear-gradient(135deg, #e58fb1 0%, #d4698e 100%);
+  box-shadow: 0 6px 16px rgba(244, 167, 192, 0.5);
+}
+
+/* ==================== SUBMIT BUTTON ==================== */
 .submitButton {
-  padding: 12px 24px;
-  background: #ff69b4;
+  padding: 14px 28px !important;
+  background: linear-gradient(135deg, #f4a7c0 0%, #e58fb1 100%);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 18px;
   cursor: pointer;
-  font-size: 16px;
-  transition: all 0.2s;
+  font-size: 18px;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(244, 167, 192, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.submitButton::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+}
+
+.submitButton:hover::after {
+  transform: translateX(100%);
 }
 
 .submitButton:hover:not(:disabled) {
-  background: #ff1493;
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #e58fb1 0%, #d4698e 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(244, 167, 192, 0.5);
+}
+
+.submitButton:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .submitButton:disabled {
-  background: #ffb6c1;
+  background: linear-gradient(135deg, #e6d4db 0%, #d4c0ca 100%);
   cursor: not-allowed;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* ==================== ERROR MESSAGE ==================== */
 .error {
-  color: #ff1493;
+  color: #d14167;
   font-size: 14px;
-  margin-top: 4px;
+  margin-top: 8px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #ffe5e9 0%, #ffeef2 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(209, 65, 103, 0.2);
+  font-weight: 500;
+  animation: fadeInScale 0.3s ease-out;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .form input[type="text"] {
+    padding: 12px 16px;
+    font-size: 15px;
+  }
+
+  .imageUpload {
+    width: 42px;
+    height: 42px;
+    font-size: 24px;
+  }
+
+  .submitButton {
+    padding: 12px 24px !important;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .inputGroup {
+    gap: 8px;
+    padding: 6px;
+  }
+
+  .form input[type="text"] {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  .imageUpload {
+    width: 38px;
+    height: 38px;
+    font-size: 22px;
+  }
+
+  .submitButton {
+    padding: 10px 20px !important;
+    font-size: 15px;
+  }
+
+  .imagePreview img {
+    max-width: 140px;
+  }
 }

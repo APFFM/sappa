@@ -11,7 +11,16 @@ import ApiKeySettings from './components/ApiKeySettings';
 import styles from './App.module.css';
 
 function App() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(() => {
+    // Load saved messages from localStorage on initial mount
+    try {
+      const savedMessages = localStorage.getItem('chat_messages');
+      return savedMessages ? JSON.parse(savedMessages) : [];
+    } catch (e) {
+      console.error('Error loading chat history:', e);
+      return [];
+    }
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState('');
   const [tokenCount, setTokenCount] = useState(0);
@@ -53,9 +62,11 @@ function App() {
       setTokenCount(parseInt(localStorage.getItem('tokenCount') || '0'));
     }
 
-    // Add API key verification
-    if (!import.meta.env.VITE_OPENAI_API_KEY) {
-      setError('OpenAI API key is missing. Please check your environment variables.');
+    // Add API key verification - check both localStorage and environment variables
+    const hasLocalStorageKey = localStorage.getItem('openai_api_key');
+    const hasEnvKey = import.meta.env.VITE_OPENAI_API_KEY;
+    if (!hasLocalStorageKey && !hasEnvKey) {
+      setError('OpenAI API key is missing. Please add your API key in the settings (🔑 button).');
       console.error('OpenAI API key is not set');
     }
 
@@ -68,12 +79,30 @@ function App() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const getApiKey = () => {
-    const key = import.meta.env.VITE_OPENAI_API_KEY || process.env.VITE_OPENAI_API_KEY;
-    if (!key) {
-      throw new Error('OpenAI API key is not configured');
+  // Persist messages to localStorage whenever they change
+  useEffect(() => {
+    if (messages.length > 0) {
+      try {
+        localStorage.setItem('chat_messages', JSON.stringify(messages));
+      } catch (e) {
+        console.error('Error saving chat history:', e);
+      }
     }
-    return key.trim();
+  }, [messages]);
+
+  const getApiKey = () => {
+    // First check localStorage for user-provided key (from ApiKeySettings)
+    const localStorageKey = localStorage.getItem('openai_api_key');
+    if (localStorageKey && localStorageKey.trim()) {
+      return localStorageKey.trim();
+    }
+
+    // Fall back to environment variables
+    const envKey = import.meta.env.VITE_OPENAI_API_KEY || process.env.VITE_OPENAI_API_KEY;
+    if (!envKey) {
+      throw new Error('OpenAI API key is not configured. Please add your API key in the settings (🔑 button).');
+    }
+    return envKey.trim();
   };
 
   const updateTokenCount = (newTokens) => {

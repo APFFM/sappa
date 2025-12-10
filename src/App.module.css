@@ -275,7 +275,7 @@ h1::after {
 /* ==================== LAYOUT ==================== */
 .layout {
   display: grid;
-  grid-template-columns: 280px minmax(600px, 850px) 280px;
+  grid-template-columns: 280px minmax(300px, 850px) 280px;
   gap: 40px;
   max-width: 1500px;
   margin: 0 auto;
@@ -288,7 +288,7 @@ h1::after {
 
 .mainContent {
   width: 100%;
-  min-width: 600px;
+  min-width: 0;
   max-width: 850px;
   position: relative;
   background: rgba(255, 255, 255, 0.95);
@@ -353,12 +353,12 @@ h1::after {
 /* ==================== RESPONSIVE DESIGN ==================== */
 @media (max-width: 1400px) {
   .layout {
-    grid-template-columns: 250px minmax(500px, 750px) 250px;
+    grid-template-columns: 250px minmax(280px, 750px) 250px;
     gap: 25px;
   }
 
   .mainContent {
-    min-width: 500px;
+    min-width: 0;
     padding: 35px;
   }
 
@@ -374,7 +374,7 @@ h1::after {
 
 @media (max-width: 1200px) {
   .layout {
-    grid-template-columns: 220px minmax(450px, 650px) 220px;
+    grid-template-columns: 220px minmax(250px, 650px) 220px;
     gap: 20px;
   }
 
@@ -452,12 +452,13 @@ h1::after {
   }
 
   .layout {
-    padding: 0;
+    padding: 0 4px;
   }
 
   .mainContent {
     padding: 16px 12px;
     border-radius: var(--radius-md);
+    min-width: 0;
   }
 
   h1 {
@@ -477,6 +478,44 @@ h1::after {
 
   .header::before {
     width: 80px;
+  }
+}
+
+/* Extra small screens (320px and below) */
+@media (max-width: 360px) {
+  .container {
+    padding: 4px;
+  }
+
+  .layout {
+    padding: 0 2px;
+  }
+
+  .mainContent {
+    padding: 12px 8px;
+  }
+
+  h1 {
+    font-size: 1.4em;
+  }
+
+  .header p {
+    font-size: 0.7em;
+    letter-spacing: 0.08em;
+  }
+
+  .header {
+    margin-bottom: 16px;
+    padding: 16px 4px 10px;
+  }
+
+  .header::before {
+    width: 60px;
+  }
+
+  .tokenInfo {
+    font-size: 10px;
+    padding: 6px 12px;
   }
 }
 

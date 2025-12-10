@@ -141,7 +141,7 @@ export default function VirtualTryOn({ originalImage, onClose }) {
         
         <div className={styles.header}>
           <h2>✨ AI-Powered Virtual Makeup Try-On</h2>
-          <p>OpenAI DALL-E - Real AI Makeup Generation</p>
+          <p>OpenAI gpt-image-1 - Real Photo Editing</p>
           {isAnalyzing && (
             <div className={styles.analyzing}>
               <span className={styles.spinner}></span>
@@ -202,8 +202,8 @@ export default function VirtualTryOn({ originalImage, onClose }) {
                 </div>
                 {generatedImage && (
                   <div className={styles.guidePreview}>
-                    <strong>✨ Real AI-Generated Makeup</strong>
-                    <p>Powered by OpenAI DALL-E</p>
+                    <strong>✨ Your Photo with AI Makeup</strong>
+                    <p>Edited by OpenAI gpt-image-1</p>
                     <p>Look: {selectedLook} | Intensity: {intensity}%</p>
                   </div>
                 )}
@@ -341,8 +341,8 @@ export default function VirtualTryOn({ originalImage, onClose }) {
             <div className={styles.premiumBadge}>
               <span className={styles.premiumIcon}>👑</span>
               <div className={styles.premiumText}>
-                <strong>Premium AI Feature - OpenAI DALL-E</strong>
-                <p>Real AI-powered makeup generation • Works worldwide • HD downloads</p>
+                <strong>Premium AI Feature - OpenAI gpt-image-1</strong>
+                <p>Real photo editing • Preserves your face • Works worldwide</p>
               </div>
             </div>
           </div>

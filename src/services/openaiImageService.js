@@ -151,6 +151,7 @@ export async function generateMakeupImage(imageBase64, lookType, intensity, faci
     formData.append('size', '1024x1024');
     formData.append('quality', 'high');
     formData.append('n', '1');
+    formData.append('response_format', 'b64_json'); // Get base64 directly to avoid CORS issues
 
     // Call the OpenAI edit endpoint
     const response = await fetch('https://api.openai.com/v1/images/edits', {

@@ -87,6 +87,38 @@
   margin: 0;
 }
 
+.analyzing {
+  margin-top: 16px;
+  padding: 12px 20px;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #10b981;
+  font-weight: 600;
+}
+
+.errorBanner {
+  margin-top: 12px;
+  padding: 10px 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  color: #ef4444;
+  font-size: 14px;
+}
+
+.warningBanner {
+  margin-top: 12px;
+  padding: 10px 16px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 8px;
+  color: #f59e0b;
+  font-size: 14px;
+}
+
 /* ==================== CONTENT ==================== */
 .content {
   display: grid;
@@ -413,6 +445,85 @@
 .downloadButton:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+}
+
+.regenerateButton {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.regenerateButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
+.regenerateButton:disabled {
+  background: #e0e0e0;
+  cursor: not-allowed;
+}
+
+.guidePreview {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.guidePreview strong {
+  display: block;
+  color: #10b981;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.guidePreview p {
+  margin: 4px 0;
+  color: #4a4a4a;
+  font-size: 14px;
+}
+
+.analysisPreview {
+  margin-top: 20px;
+  padding: 16px;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 12px;
+}
+
+.analysisPreview h4 {
+  margin: 0 0 12px;
+  color: #d4af37;
+  font-size: 16px;
+}
+
+.analysisPreview p {
+  margin: 6px 0;
+  color: #4a4a4a;
+  font-size: 14px;
+}
+
+.aiTag {
+  margin-left: auto;
+  padding: 2px 8px;
+  background: linear-gradient(135deg, #10b981, #34d399);
+  color: white;
+  font-size: 11px;
+  border-radius: 10px;
+  font-weight: 600;
 }
 
 /* ==================== PREMIUM BADGE ==================== */

@@ -1,16 +1,16 @@
 /**
- * Gemini 2.0 Flash Image Service
- * Uses Google's Gemini 2.0 Flash model with image generation capabilities
+ * Gemini Image Service
+ * Uses Google's Gemini model with native image generation capabilities
  * Uses REST API directly for browser compatibility
  *
- * Note: For image generation/editing, use gemini-2.0-flash-exp-image-generation model
- * with responseModalities: ["Text", "Image"]
+ * Supported models for image generation:
+ * - gemini-2.0-flash-exp-image-generation (v1alpha)
+ * - gemini-2.5-flash-preview-05-20 (v1beta)
  */
 
-// Model for image generation - using gemini-2.0-flash-exp with responseModalities
-// Note: gemini-2.5-flash-preview-05-20 is also available for image generation
-const GEMINI_IMAGE_MODEL = 'gemini-2.0-flash-exp';
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_IMAGE_MODEL}:generateContent`;
+// Use gemini-2.0-flash-exp-image-generation with v1alpha API for image generation
+const GEMINI_IMAGE_MODEL = 'gemini-2.0-flash-exp-image-generation';
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1alpha/models/${GEMINI_IMAGE_MODEL}:generateContent`;
 
 /**
  * Get Gemini API key from localStorage or environment

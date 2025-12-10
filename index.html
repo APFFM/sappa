@@ -33,8 +33,9 @@
     
     <!-- Smooth scrolling and touch optimization -->
     <style>
-      * {
-        -webkit-tap-highlight-color: rgba(244, 167, 192, 0.2);
+      *, *::before, *::after {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: rgba(212, 175, 55, 0.15);
         -webkit-touch-callout: none;
       }
       
@@ -45,6 +46,29 @@
       
       body {
         overscroll-behavior-y: contain;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        overflow-x: hidden;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      body.dark-theme {
+        --color-background: #0f1419;
+        --color-surface: #1a1f2e;
+        --color-text-primary: #f0f0f0;
+        --color-text-secondary: #b0b0b0;
+        --color-text-muted: #707070;
+      }
+
+      body.dark-theme {
+        background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+        color: #f0f0f0;
+      }
+
+      #root {
+        width: 100%;
+        overflow-x: hidden;
       }
     </style>
   </head>

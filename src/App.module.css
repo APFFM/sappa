@@ -216,6 +216,16 @@ h1::after {
   animation: fadeInUp 0.8s ease-out 0.2s both;
 }
 
+.desktopOnly {
+  display: block;
+}
+
+@media (max-width: 1024px) {
+  .desktopOnly {
+    display: none;
+  }
+}
+
 .mainContent {
   width: 100%;
   min-width: 600px;
@@ -325,6 +335,7 @@ h1::after {
     grid-template-columns: 1fr;
     max-width: 850px;
     gap: 20px;
+    padding-bottom: calc(var(--mobile-nav-height, 60px) + var(--spacing-lg, 16px));
   }
 
   .mainContent {

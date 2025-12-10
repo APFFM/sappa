@@ -5,7 +5,10 @@ import SuggestionButtons from './components/SuggestionButtons';
 import LoadingIndicator from './components/LoadingIndicator';
 import WelcomeGuide from './components/WelcomeGuide';
 import ProductRecommendations from './components/ProductRecommendations';
+import MobileNav from './components/MobileNav';
+import Drawer from './components/Drawer';
 import styles from './App.module.css';
+import './design-system.css';
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -13,6 +16,8 @@ function App() {
   const [selectedPrompt, setSelectedPrompt] = useState('');
   const [tokenCount, setTokenCount] = useState(0);
   const [error, setError] = useState(null);
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
+  const [isProductsOpen, setIsProductsOpen] = useState(false);
 
   const MAX_TOKENS_PER_HOUR = 20000;
   const RATE_LIMIT_DURATION = 3600000; // 1 hour in milliseconds
@@ -248,12 +253,14 @@ function App() {
           { 
             role: 'user', 
             content: message,
-            image: image 
+            image: image,
+            timestamp: new Date().toISOString()
           },
           { 
             role: 'assistant', 
             content: formattedContent,
-            audioContent: audioSummary
+            audioContent: audioSummary,
+            timestamp: new Date().toISOString()
           }
         ]);
         updateTokenCount(data.usage.total_tokens);
@@ -262,8 +269,8 @@ function App() {
       console.error('API Error:', error);
       setError(error.message || 'Failed to connect to OpenAI API');
       setMessages([...messages,
-        { role: 'user', content: message, image: image },
-        { role: 'assistant', content: `Error: ${error.message}. Please try again with a smaller image or different question.` }
+        { role: 'user', content: message, image: image, timestamp: new Date().toISOString() },
+        { role: 'assistant', content: `Error: ${error.message}. Please try again with a smaller image or different question.`, timestamp: new Date().toISOString() }
       ]);
     } finally {
       setIsLoading(false);
@@ -293,7 +300,7 @@ function App() {
         <p>Your Personal AI Beauty Expert</p>
       </div>
       <div className={styles.layout}>
-        <aside className={styles.sidebar}>
+        <aside className={`${styles.sidebar} ${styles.desktopOnly}`}>
           <WelcomeGuide />
         </aside>
         <main className={styles.mainContent}>
@@ -314,10 +321,35 @@ function App() {
             onClearPrompt={() => setSelectedPrompt('')}
           />
         </main>
-        <aside className={styles.sidebar}>
+        <aside className={`${styles.sidebar} ${styles.desktopOnly}`}>
           <ProductRecommendations messages={messages} />
         </aside>
       </div>
+      
+      {/* Mobile Navigation */}
+      <MobileNav 
+        onOpenGuide={() => setIsGuideOpen(true)}
+        onOpenProducts={() => setIsProductsOpen(true)}
+      />
+      
+      {/* Mobile Drawers */}
+      <Drawer 
+        isOpen={isGuideOpen} 
+        onClose={() => setIsGuideOpen(false)}
+        title="Welcome Guide"
+        position="left"
+      >
+        <WelcomeGuide />
+      </Drawer>
+      
+      <Drawer 
+        isOpen={isProductsOpen} 
+        onClose={() => setIsProductsOpen(false)}
+        title="Product Recommendations"
+        position="right"
+      >
+        <ProductRecommendations messages={messages} />
+      </Drawer>
     </div>
   );
 }

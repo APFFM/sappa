@@ -2,10 +2,12 @@
 .chat {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin: 20px 0;
-  padding: 5px;
+  gap: 16px;
+  margin: 16px 0;
+  padding: 0;
   min-height: 200px;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 /* ==================== EMPTY STATE ==================== */
@@ -235,46 +237,10 @@
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 768px) {
   .message {
-    max-width: 90%;
-    padding: 16px 18px;
-    gap: 10px;
-    font-size: 15px;
-  }
-
-  .icon {
-    width: 36px;
-    height: 36px;
-    font-size: 18px;
-  }
-
-  .contentWrapper {
-    font-size: 14.5px;
-    line-height: 1.7;
-  }
-
-  .imagePreview {
-    max-width: 220px;
-  }
-  
-  .emptyIcon {
-    font-size: 56px;
-  }
-  
-  .emptyTitle {
-    font-size: 20px;
-  }
-  
-  .emptyText {
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 480px) {
-  .message {
     max-width: 95%;
     padding: 14px 16px;
-    gap: 8px;
-    font-size: 14.5px;
+    gap: 10px;
+    font-size: 14px;
   }
 
   .icon {
@@ -285,19 +251,61 @@
 
   .contentWrapper {
     font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .imagePreview {
+    max-width: 200px;
+  }
+  
+  .emptyIcon {
+    font-size: 40px;
+  }
+  
+  .emptyTitle {
+    font-size: 20px;
+  }
+  
+  .emptyText {
+    font-size: 14px;
+    padding: 0 8px;
+  }
+
+  .emptyState {
+    padding: 60px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .message {
+    max-width: 100%;
+    padding: 12px 14px;
+    gap: 8px;
+    font-size: 13.5px;
+    margin: 8px 0;
+  }
+
+  .icon {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+  }
+
+  .contentWrapper {
+    font-size: 13.5px;
     line-height: 1.6;
   }
 
   .imagePreview {
-    max-width: 180px;
+    max-width: 160px;
   }
   
   .emptyState {
-    padding: 40px 20px;
+    padding: 40px 12px;
   }
   
   .emptyIcon {
-    font-size: 48px;
+    font-size: 36px;
   }
   
   .emptyTitle {
@@ -306,5 +314,6 @@
   
   .emptyText {
     font-size: 13px;
+    padding: 0 4px;
   }
 }

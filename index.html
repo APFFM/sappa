@@ -33,8 +33,9 @@
     
     <!-- Smooth scrolling and touch optimization -->
     <style>
-      * {
-        -webkit-tap-highlight-color: rgba(244, 167, 192, 0.2);
+      *, *::before, *::after {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: rgba(212, 175, 55, 0.15);
         -webkit-touch-callout: none;
       }
       
@@ -45,6 +46,15 @@
       
       body {
         overscroll-behavior-y: contain;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        overflow-x: hidden;
+      }
+
+      #root {
+        width: 100%;
+        overflow-x: hidden;
       }
     </style>
   </head>

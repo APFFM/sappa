@@ -7,8 +7,9 @@
  * with responseModalities: ["Text", "Image"]
  */
 
-// Model specifically for image generation and editing
-const GEMINI_IMAGE_MODEL = 'gemini-2.0-flash-exp-image-generation';
+// Model for image generation - using gemini-2.0-flash-exp with responseModalities
+// Note: gemini-2.5-flash-preview-05-20 is also available for image generation
+const GEMINI_IMAGE_MODEL = 'gemini-2.0-flash-exp';
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_IMAGE_MODEL}:generateContent`;
 
 /**

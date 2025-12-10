@@ -1,10 +1,15 @@
 /**
- * Gemini 2.5 Flash Image Service
- * Uses Google's latest Gemini 2.5 Flash Image model for real image editing
+ * Gemini 2.0 Flash Image Service
+ * Uses Google's Gemini 2.0 Flash model with image generation capabilities
  * Uses REST API directly for browser compatibility
+ *
+ * Note: For image generation/editing, use gemini-2.0-flash-exp-image-generation model
+ * with responseModalities: ["Text", "Image"]
  */
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent';
+// Model specifically for image generation and editing
+const GEMINI_IMAGE_MODEL = 'gemini-2.0-flash-exp-image-generation';
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_IMAGE_MODEL}:generateContent`;
 
 /**
  * Get Gemini API key from localStorage or environment
@@ -56,7 +61,8 @@ export async function generateMakeupImage(imageBase64, lookType, intensity, faci
     // Build intelligent prompt based on analysis and preferences
     const makeupPrompt = buildMakeupPrompt(lookType, intensity, facialAnalysis);
 
-    console.log('Generating makeup with Gemini 2.0 Flash...');
+    console.log('Generating makeup with Gemini 2.0 Flash Image Generation...');
+    console.log('Model:', GEMINI_IMAGE_MODEL);
     console.log('Look type:', lookType, 'Intensity:', intensity);
 
     const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
@@ -81,6 +87,8 @@ export async function generateMakeupImage(imageBase64, lookType, intensity, faci
           topK: 32,
           topP: 1,
           maxOutputTokens: 4096,
+          // Required for image generation - tells the model to output images
+          responseModalities: ["Text", "Image"],
         },
       }),
     });

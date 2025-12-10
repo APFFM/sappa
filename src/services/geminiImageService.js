@@ -1,9 +1,10 @@
 /**
  * Gemini 2.5 Flash Image Service
  * Uses Google's latest Gemini 2.5 Flash Image model for real image editing
+ * Uses REST API directly for browser compatibility
  */
 
-import { GoogleGenAI } from "@google/genai";
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent';
 
 /**
  * Get Gemini API key from localStorage or environment
@@ -14,27 +15,14 @@ function getApiKey() {
   if (localKey) {
     return localKey;
   }
-  
+
   // Fallback to environment variable
   const envKey = import.meta.env.VITE_GEMINI_API_KEY;
   if (envKey && envKey !== 'your_gemini_api_key_here') {
     return envKey;
   }
-  
-  return null;
-}
 
-/**
- * Initialize Gemini AI client
- */
-function getGeminiClient() {
-  const apiKey = getApiKey();
-  
-  if (!apiKey) {
-    throw new Error('Gemini API key is not configured. Please add your API key in Settings (🔑 icon)');
-  }
-  
-  return new GoogleGenAI(apiKey);
+  return null;
 }
 
 /**
@@ -46,53 +34,82 @@ function getGeminiClient() {
  * @returns {Promise<string>} - Base64 encoded result image
  */
 export async function generateMakeupImage(imageBase64, lookType, intensity, facialAnalysis = null) {
+  const apiKey = getApiKey();
+
+  if (!apiKey) {
+    throw new Error('Gemini API key is not configured. Please add your API key in Settings (🔑 icon)');
+  }
+
   try {
-    const ai = getGeminiClient();
-    
     // Remove data URL prefix if present
     let base64Data = imageBase64;
     if (imageBase64.includes('base64,')) {
       base64Data = imageBase64.split('base64,')[1];
     }
-    
+
     // Determine mime type
     let mimeType = 'image/jpeg';
     if (imageBase64.includes('image/png')) {
       mimeType = 'image/png';
     }
-    
+
     // Build intelligent prompt based on analysis and preferences
     const makeupPrompt = buildMakeupPrompt(lookType, intensity, facialAnalysis);
-    
-    const prompt = [
-      { 
-        text: makeupPrompt
-      },
-      {
-        inlineData: {
-          mimeType: mimeType,
-          data: base64Data,
-        },
-      },
-    ];
-    
-    console.log('Generating makeup with Gemini 2.5 Flash Image...');
+
+    console.log('Generating makeup with Gemini 2.0 Flash...');
     console.log('Look type:', lookType, 'Intensity:', intensity);
-    
-    const model = ai.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
-    const response = await model.generateContent(prompt);
-    
-    // Extract image from response
-    for (const part of response.candidates[0].content.parts) {
-      if (part.inlineData) {
-        const imageData = part.inlineData.data;
-        console.log('✓ Makeup image generated successfully!');
-        return `data:${part.inlineData.mimeType};base64,${imageData}`;
+
+    const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { text: makeupPrompt },
+            {
+              inline_data: {
+                mime_type: mimeType,
+                data: base64Data,
+              },
+            },
+          ],
+        }],
+        generationConfig: {
+          temperature: 0.4,
+          topK: 32,
+          topP: 1,
+          maxOutputTokens: 4096,
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Gemini API error: ${errorData.error?.message || response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    // Extract image or text from response
+    if (data.candidates && data.candidates[0]?.content?.parts) {
+      for (const part of data.candidates[0].content.parts) {
+        if (part.inlineData) {
+          const imageData = part.inlineData.data;
+          console.log('✓ Makeup image generated successfully!');
+          return `data:${part.inlineData.mimeType};base64,${imageData}`;
+        }
+      }
+      // If no image, the model might have returned text (e.g., it can't edit images)
+      const textResponse = data.candidates[0].content.parts.find(p => p.text);
+      if (textResponse) {
+        throw new Error(`Model response: ${textResponse.text.substring(0, 200)}...`);
       }
     }
-    
-    throw new Error('No image data in response');
-    
+
+    throw new Error('No image data in response. The model may not support image generation for this request.');
+
   } catch (error) {
     console.error('Gemini makeup generation failed:', error);
     throw new Error(`Failed to generate makeup image: ${error.message}`);

@@ -8,9 +8,9 @@
  * - gemini-2.5-flash-preview-05-20 (v1beta)
  */
 
-// Use gemini-2.0-flash-exp-image-generation with v1alpha API for image generation
-const GEMINI_IMAGE_MODEL = 'gemini-2.0-flash-exp-image-generation';
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1alpha/models/${GEMINI_IMAGE_MODEL}:generateContent`;
+// Use gemini-2.0-flash-exp with v1beta API and responseModalities for image generation
+const GEMINI_IMAGE_MODEL = 'gemini-2.0-flash-exp';
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_IMAGE_MODEL}:generateContent`;
 
 /**
  * Get Gemini API key from localStorage or environment

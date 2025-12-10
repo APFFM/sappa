@@ -576,12 +576,13 @@ Return ONLY valid JSON with this structure:
  * @returns {Object} - API status information
  */
 export function getGeminiStatus() {
+  const apiKey = getApiKey();
   return {
     available: isGeminiAvailable(),
-    configured: !!GEMINI_API_KEY,
+    configured: !!apiKey,
     message: isGeminiAvailable() 
       ? "Gemini AI is ready for advanced image analysis"
-      : "Gemini API key not configured. Add VITE_GEMINI_API_KEY to your .env file",
-    note: "Note: Gemini provides image analysis. For image generation, consider using Imagen 3 (Vertex AI), Stability AI, or DALL-E."
+      : "Gemini API key not configured. Click the 🔑 icon to add your API key",
+    note: "Note: Gemini 2.5 Flash now supports image generation and analysis."
   };
 }

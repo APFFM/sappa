@@ -279,17 +279,19 @@ export function validateImage(imageBase64) {
     return { valid: false, error: 'Invalid image data' };
   }
   
-  // Check if it's a valid base64 image
-  if (!imageBase64.includes('data:image')) {
-    return { valid: false, error: 'Image must be in data URL format' };
+  // Check if it's a valid base64 image with regex
+  const validImagePattern = /^data:image\/(png|jpeg|jpg|gif|webp);base64,/;
+  if (!validImagePattern.test(imageBase64)) {
+    return { valid: false, error: 'Image must be in data URL format (PNG, JPEG, GIF, or WebP)' };
   }
   
   // Check size (max 4MB for API)
-  const sizeInBytes = (imageBase64.length * 3) / 4;
+  const base64Data = imageBase64.split(',')[1] || '';
+  const sizeInBytes = (base64Data.length * 3) / 4;
   const sizeInMB = sizeInBytes / (1024 * 1024);
   
   if (sizeInMB > 4) {
-    return { valid: false, error: 'Image too large (max 4MB)' };
+    return { valid: false, error: 'Image too large (max 4MB). Please compress or resize your image.' };
   }
   
   return { valid: true };

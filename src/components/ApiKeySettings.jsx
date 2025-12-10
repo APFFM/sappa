@@ -37,14 +37,6 @@ export default function ApiKeySettings() {
       localStorage.setItem('openai_api_key', openaiKey);
     }
 
-    // Update environment variables dynamically
-    if (geminiKey) {
-      import.meta.env.VITE_GEMINI_API_KEY = geminiKey;
-    }
-    if (openaiKey) {
-      import.meta.env.VITE_OPENAI_API_KEY = openaiKey;
-    }
-
     setSaveMessage('✓ API keys saved successfully!');
     setTimeout(() => {
       setSaveMessage('');

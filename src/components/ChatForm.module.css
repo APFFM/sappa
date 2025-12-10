@@ -20,6 +20,18 @@
   backdrop-filter: blur(10px);
   border: 1px solid rgba(0, 0, 0, 0.08);
   transition: all var(--transition-normal);
+  position: relative;
+}
+
+.inputGroup::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-emerald));
+  opacity: 0;
+  z-index: -1;
+  transition: opacity var(--transition-normal);
 }
 
 .inputGroup:hover {
@@ -29,7 +41,11 @@
 
 .inputGroup:focus-within {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  border-color: var(--color-accent);
+  border-color: var(--color-emerald);
+}
+
+.inputGroup:focus-within::before {
+  opacity: 0.3;
 }
 
 /* ==================== TEXT INPUT ==================== */
@@ -59,7 +75,7 @@
 /* ==================== BUTTONS ==================== */
 .form button {
   padding: 12px;
-  background: var(--color-text-primary);
+  background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-emerald-dark) 100%);
   color: white;
   border: none;
   border-radius: var(--radius-full);
@@ -92,7 +108,8 @@
 .form button:hover {
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
-  background: var(--color-primary-light);
+  background: linear-gradient(135deg, var(--color-emerald) 0%, var(--color-emerald-light) 100%);
+  animation: emeraldPulse 2s ease infinite;
 }
 
 .form button:active {
@@ -104,6 +121,7 @@
   cursor: not-allowed;
   box-shadow: var(--shadow-sm);
   color: #9a9a9a;
+  animation: none;
 }
 
 /* ==================== IMAGE UPLOAD ==================== */
@@ -196,7 +214,7 @@
 /* ==================== SUBMIT BUTTON ==================== */
 .submitButton {
   padding: 14px 28px !important;
-  background: var(--color-text-primary);
+  background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-emerald-dark) 100%);
   color: white;
   border: none;
   border-radius: var(--radius-full);
@@ -232,9 +250,10 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background: var(--color-primary-light);
+  background: linear-gradient(135deg, var(--color-emerald) 0%, var(--color-emerald-light) 100%);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
+  animation: emeraldPulse 2s ease infinite;
 }
 
 .submitButton:active:not(:disabled) {
@@ -246,6 +265,7 @@
   cursor: not-allowed;
   box-shadow: var(--shadow-sm);
   color: #9a9a9a;
+  animation: none;
 }
 
 /* ==================== ERROR MESSAGE ==================== */

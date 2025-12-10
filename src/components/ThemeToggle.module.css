@@ -1,0 +1,104 @@
+/* ==================== TOGGLE BUTTON ==================== */
+.toggleButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 1000;
+  animation: fadeInSlide 0.8s ease-out;
+}
+
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.toggleTrack {
+  width: 64px;
+  height: 32px;
+  background: linear-gradient(135deg, #d4af37, #e5c158);
+  border-radius: 50px;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 12px rgba(212, 175, 55, 0.3),
+    inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggleTrack.dark {
+  background: linear-gradient(135deg, #10b981, #34d399);
+  box-shadow: 
+    0 4px 12px rgba(16, 185, 129, 0.3),
+    inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.toggleTrack.dark .toggleThumb {
+  transform: translateX(32px);
+}
+
+.icon {
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.toggleButton:hover .icon {
+  transform: scale(1.2) rotate(20deg);
+}
+
+.toggleButton:active .toggleThumb {
+  transform: scale(0.95);
+}
+
+.toggleTrack.dark .toggleButton:active .toggleThumb {
+  transform: translateX(32px) scale(0.95);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .toggleButton {
+    top: 16px;
+    right: 16px;
+  }
+
+  .toggleTrack {
+    width: 56px;
+    height: 28px;
+  }
+
+  .toggleThumb {
+    width: 22px;
+    height: 22px;
+  }
+
+  .toggleTrack.dark .toggleThumb {
+    transform: translateX(28px);
+  }
+
+  .icon {
+    font-size: 12px;
+  }
+}

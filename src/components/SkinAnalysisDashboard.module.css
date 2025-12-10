@@ -1,0 +1,488 @@
+/* ==================== FLOATING BUTTON ==================== */
+.floatingButton {
+  position: fixed;
+  bottom: 100px;
+  right: 30px;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #10b981, #34d399);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  z-index: 999;
+  animation: floatIn 0.8s ease-out, pulse 3s ease-in-out 2s infinite;
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.floatingButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(16, 185, 129, 0.5);
+}
+
+.buttonIcon {
+  font-size: 20px;
+}
+
+/* ==================== OVERLAY & DASHBOARD ==================== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.dashboard {
+  background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+  border-radius: 16px;
+  max-width: 1200px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.closeButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  font-size: 20px;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: rotate(90deg);
+}
+
+/* ==================== HEADER ==================== */
+.header {
+  text-align: center;
+  padding: 40px 20px 20px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(212, 175, 55, 0.1));
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, transparent, #10b981, #d4af37, transparent) 1;
+}
+
+.header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5em;
+  font-weight: 500;
+  margin: 0 0 10px;
+  background: linear-gradient(135deg, #10b981, #d4af37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header p {
+  color: #4a4a4a;
+  font-size: 1.1em;
+  margin: 0;
+}
+
+/* ==================== CONTENT ==================== */
+.content {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* ==================== OVERALL SCORE ==================== */
+.overallScore {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  padding: 30px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.scoreCircle {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  flex-shrink: 0;
+}
+
+.progressRing {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.progressCircle {
+  transition: stroke-dasharray 1s ease;
+}
+
+.scoreValue {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.scoreNumber {
+  display: block;
+  font-size: 3em;
+  font-weight: 700;
+  background: linear-gradient(135deg, #10b981, #d4af37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.scoreLabel {
+  display: block;
+  font-size: 0.9em;
+  color: #8a8a8a;
+  margin-top: 5px;
+}
+
+.scoreInfo h3 {
+  font-size: 1.5em;
+  margin: 0 0 10px;
+  color: #000;
+}
+
+.scoreInfo p {
+  color: #4a4a4a;
+  font-size: 1em;
+  margin: 0;
+}
+
+/* ==================== METRICS GRID ==================== */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.metricCard {
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.metricCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.metricHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.metricName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a4a4a;
+}
+
+.metricValue {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.progressBar {
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1s ease;
+}
+
+/* ==================== SKIN TYPE SECTION ==================== */
+.skinTypeSection h3,
+.progressSection h3,
+.recommendationsSection h3 {
+  font-size: 1.3em;
+  margin-bottom: 16px;
+  color: #000;
+}
+
+.skinTypeCard {
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.skinType {
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.concernTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.concernTag {
+  padding: 6px 14px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(212, 175, 55, 0.1));
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #10b981;
+}
+
+/* ==================== PROGRESS CHART ==================== */
+.chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  height: 200px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.chartBar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.bar {
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+  position: relative;
+  transition: height 1s ease;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+.barValue {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+}
+
+.barLabel {
+  font-size: 12px;
+  color: #8a8a8a;
+  font-weight: 600;
+}
+
+/* ==================== RECOMMENDATIONS ==================== */
+.recommendations {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.recommendationCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border-left: 4px solid #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.recommendationCard.critical {
+  border-left-color: #ef4444;
+}
+
+.recommendationCard.high {
+  border-left-color: #f59e0b;
+}
+
+.recommendationCard.medium {
+  border-left-color: #10b981;
+}
+
+.recommendationCard:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.recIcon {
+  font-size: 32px;
+}
+
+.recContent {
+  flex: 1;
+}
+
+.recContent h4 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  color: #000;
+}
+
+.recContent p {
+  margin: 0;
+  font-size: 14px;
+  color: #4a4a4a;
+}
+
+.priorityBadge {
+  padding: 6px 12px;
+  background: #f5f5f5;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #8a8a8a;
+}
+
+/* ==================== PREMIUM SECTION ==================== */
+.premiumSection {
+  margin-top: 20px;
+}
+
+.premiumCard {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(212, 175, 55, 0.1));
+  border: 2px solid transparent;
+  border-image: linear-gradient(135deg, #10b981, #d4af37) 1;
+  border-radius: 12px;
+}
+
+.premiumIcon {
+  font-size: 40px;
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.premiumContent {
+  flex: 1;
+}
+
+.premiumContent h3 {
+  margin: 0 0 8px;
+  font-size: 1.2em;
+  background: linear-gradient(135deg, #10b981, #d4af37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.premiumContent p {
+  margin: 0;
+  font-size: 14px;
+  color: #4a4a4a;
+}
+
+.upgradeButton {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #10b981, #34d399);
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.upgradeButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .floatingButton {
+    bottom: 80px;
+    right: 20px;
+  }
+
+  .overallScore {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart {
+    height: 150px;
+  }
+
+  .premiumCard {
+    flex-direction: column;
+    text-align: center;
+  }
+}

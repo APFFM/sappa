@@ -1,0 +1,474 @@
+/* ==================== OVERLAY ==================== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ==================== MODAL ==================== */
+.modal {
+  background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+  border-radius: 16px;
+  max-width: 1400px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.closeButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  font-size: 20px;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: rotate(90deg);
+}
+
+/* ==================== HEADER ==================== */
+.header {
+  text-align: center;
+  padding: 40px 20px 20px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(16, 185, 129, 0.1));
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, transparent, #d4af37, #10b981, transparent) 1;
+}
+
+.header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5em;
+  font-weight: 500;
+  margin: 0 0 10px;
+  background: linear-gradient(135deg, #d4af37, #10b981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header p {
+  color: #4a4a4a;
+  font-size: 1.1em;
+  margin: 0;
+}
+
+/* ==================== CONTENT ==================== */
+.content {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 30px;
+  padding: 30px;
+}
+
+/* ==================== COMPARISON AREA ==================== */
+.comparisonArea {
+  background: #f5f5f5;
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.placeholder {
+  text-align: center;
+  padding: 60px 40px;
+  color: #8a8a8a;
+}
+
+.placeholderIcon {
+  font-size: 80px;
+  margin-bottom: 20px;
+  opacity: 0.3;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+.comparison {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  cursor: ew-resize;
+  user-select: none;
+}
+
+.beforeImage,
+.afterImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.afterImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.virtualMakeup {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    rgba(212, 175, 55, 0.05),
+    rgba(16, 185, 129, 0.05)
+  );
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* ==================== SLIDER ==================== */
+.slider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #d4af37, #10b981);
+  cursor: ew-resize;
+  transition: none;
+  z-index: 10;
+}
+
+.sliderButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  font-size: 20px;
+  color: #10b981;
+}
+
+.labels {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.beforeLabel {
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+
+.afterLabel {
+  background: linear-gradient(135deg, #d4af37, #10b981);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+
+/* ==================== CONTROLS ==================== */
+.controls {
+  overflow-y: auto;
+  max-height: 600px;
+  padding-right: 10px;
+}
+
+.section {
+  margin-bottom: 30px;
+}
+
+.section h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #000;
+}
+
+/* ==================== LOOK GRID ==================== */
+.lookGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.lookButton {
+  padding: 16px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.lookButton:hover {
+  border-color: var(--look-color);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.lookButton.active {
+  background: linear-gradient(135deg, var(--look-color), rgba(255, 255, 255, 0.5));
+  border-color: var(--look-color);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.lookIcon {
+  font-size: 28px;
+}
+
+.lookName {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a4a4a;
+}
+
+/* ==================== INTENSITY CONTROL ==================== */
+.intensityControl {
+  padding: 20px;
+  background: #f5f5f5;
+  border-radius: 12px;
+}
+
+.intensitySlider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #d4af37, #10b981);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.intensitySlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  border: 3px solid #10b981;
+}
+
+.intensityLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #8a8a8a;
+}
+
+/* ==================== FEATURES LIST ==================== */
+.featuresList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.featureItem:hover {
+  background: #fafafa;
+  transform: translateX(5px);
+}
+
+.featureItem input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #10b981;
+}
+
+/* ==================== ACTIONS ==================== */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.applyButton,
+.downloadButton {
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.applyButton {
+  background: linear-gradient(135deg, #10b981, #34d399);
+  color: white;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.applyButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.applyButton:disabled {
+  background: #e0e0e0;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.downloadButton {
+  background: linear-gradient(135deg, #d4af37, #e5c158);
+  color: white;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.downloadButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+}
+
+/* ==================== PREMIUM BADGE ==================== */
+.premiumBadge {
+  margin-top: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(16, 185, 129, 0.1));
+  border: 2px solid transparent;
+  border-image: linear-gradient(135deg, #d4af37, #10b981) 1;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.premiumIcon {
+  font-size: 28px;
+  animation: float 2s ease-in-out infinite;
+}
+
+.premiumText strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 4px;
+  background: linear-gradient(135deg, #d4af37, #10b981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.premiumText p {
+  margin: 0;
+  font-size: 12px;
+  color: #8a8a8a;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1024px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+
+  .controls {
+    max-height: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .header h2 {
+    font-size: 2em;
+  }
+
+  .lookGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .imageContainer {
+    height: 400px;
+  }
+}

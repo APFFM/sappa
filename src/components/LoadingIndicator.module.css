@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   gap: 20px;
-  padding: 30px;
+  padding: 40px;
   margin: 20px 0;
   position: relative;
 }
@@ -18,10 +18,11 @@
 }
 
 .sparkle {
-  font-size: 32px;
+  font-size: 28px;
   animation: sparkleFloat 2s ease-in-out infinite;
-  filter: drop-shadow(0 0 10px rgba(244, 167, 192, 0.6));
   position: relative;
+  color: var(--color-accent);
+  opacity: 0.6;
 }
 
 .sparkle:nth-child(1) {
@@ -38,43 +39,28 @@
 
 @keyframes sparkleFloat {
   0%, 100% {
-    transform: translateY(0px) scale(1) rotate(0deg);
-    opacity: 0.8;
-  }
-  25% {
-    transform: translateY(-15px) scale(1.2) rotate(90deg);
-    opacity: 1;
+    transform: translateY(0px) scale(1);
+    opacity: 0.4;
   }
   50% {
-    transform: translateY(-20px) scale(1) rotate(180deg);
+    transform: translateY(-10px) scale(1.1);
     opacity: 0.8;
-  }
-  75% {
-    transform: translateY(-15px) scale(1.2) rotate(270deg);
-    opacity: 1;
   }
 }
 
 /* ==================== SHIMMER CIRCLE ==================== */
 .shimmerCircle {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    rgba(244, 167, 192, 0.2) 0%,
-    rgba(255, 214, 232, 0.4) 50%,
-    rgba(244, 167, 192, 0.2) 100%
-  );
-  background-size: 200% 200%;
+  background: rgba(212, 175, 55, 0.1);
   animation: shimmerPulse 2s ease-in-out infinite;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 
-    0 0 20px rgba(244, 167, 192, 0.4),
-    inset 0 0 20px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
   position: relative;
+  border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 .shimmerCircle::before {
@@ -82,28 +68,18 @@
   position: absolute;
   inset: 10px;
   border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.8),
-    rgba(255, 249, 252, 0.9)
-  );
+  background: rgba(255, 255, 255, 0.9);
   animation: shimmerRotate 3s linear infinite;
 }
 
 @keyframes shimmerPulse {
   0%, 100% {
     transform: scale(1);
-    background-position: 0% 50%;
-    box-shadow: 
-      0 0 20px rgba(244, 167, 192, 0.4),
-      inset 0 0 20px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
   }
   50% {
-    transform: scale(1.1);
-    background-position: 100% 50%;
-    box-shadow: 
-      0 0 30px rgba(244, 167, 192, 0.6),
-      inset 0 0 30px rgba(255, 255, 255, 0.7);
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
   }
 }
 
@@ -118,18 +94,18 @@
 
 /* ==================== TEXT ==================== */
 .text {
-  font-size: 16px;
+  font-size: 15px;
   font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  color: #9d7b8c;
-  letter-spacing: 0.5px;
+  font-weight: 400;
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
   animation: textFade 2s ease-in-out infinite;
   text-align: center;
 }
 
 @keyframes textFade {
   0%, 100% {
-    opacity: 0.6;
+    opacity: 0.5;
   }
   50% {
     opacity: 1;
@@ -139,16 +115,17 @@
 /* ==================== DOTS ANIMATION ==================== */
 .dots {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   margin-top: 10px;
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #f4a7c0 0%, #e58fb1 100%);
+  background: var(--color-accent);
   animation: dotBounce 1.4s ease-in-out infinite;
+  opacity: 0.6;
 }
 
 .dot:nth-child(1) {
@@ -166,10 +143,10 @@
 @keyframes dotBounce {
   0%, 80%, 100% {
     transform: translateY(0) scale(1);
-    opacity: 0.6;
+    opacity: 0.4;
   }
   40% {
-    transform: translateY(-12px) scale(1.2);
+    transform: translateY(-8px) scale(1.1);
     opacity: 1;
   }
 }

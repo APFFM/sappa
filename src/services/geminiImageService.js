@@ -5,17 +5,36 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+/**
+ * Get Gemini API key from localStorage or environment
+ */
+function getApiKey() {
+  // First check localStorage (user-configured)
+  const localKey = localStorage.getItem('gemini_api_key');
+  if (localKey) {
+    return localKey;
+  }
+  
+  // Fallback to environment variable
+  const envKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (envKey && envKey !== 'your_gemini_api_key_here') {
+    return envKey;
+  }
+  
+  return null;
+}
 
 /**
  * Initialize Gemini AI client
  */
 function getGeminiClient() {
-  if (!GEMINI_API_KEY || GEMINI_API_KEY === 'your_gemini_api_key_here') {
-    throw new Error('Gemini API key is not configured. Please add VITE_GEMINI_API_KEY to your .env file');
+  const apiKey = getApiKey();
+  
+  if (!apiKey) {
+    throw new Error('Gemini API key is not configured. Please add your API key in Settings (🔑 icon)');
   }
   
-  return new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+  return new GoogleGenAI(apiKey);
 }
 
 /**
@@ -60,10 +79,8 @@ export async function generateMakeupImage(imageBase64, lookType, intensity, faci
     console.log('Generating makeup with Gemini 2.5 Flash Image...');
     console.log('Look type:', lookType, 'Intensity:', intensity);
     
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-exp",
-      contents: prompt,
-    });
+    const model = ai.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+    const response = await model.generateContent(prompt);
     
     // Extract image from response
     for (const part of response.candidates[0].content.parts) {
@@ -237,7 +254,8 @@ export async function generateMakeupVariations(imageBase64, variations, facialAn
  * Check if Gemini Image generation is available
  */
 export function isGeminiImageAvailable() {
-  return !!GEMINI_API_KEY && GEMINI_API_KEY !== 'your_gemini_api_key_here';
+  const apiKey = getApiKey();
+  return !!apiKey;
 }
 
 /**

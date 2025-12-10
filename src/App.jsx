@@ -7,6 +7,7 @@ import WelcomeGuide from './components/WelcomeGuide';
 import ProductRecommendations from './components/ProductRecommendations';
 import ThemeToggle from './components/ThemeToggle';
 import SkinAnalysisDashboard from './components/SkinAnalysisDashboard';
+import ApiKeySettings from './components/ApiKeySettings';
 import styles from './App.module.css';
 
 function App() {
@@ -335,6 +336,7 @@ function App() {
   return (
     <div className={styles.container}>
       <ThemeToggle />
+      <ApiKeySettings />
       <div className={styles.header}>
         <h1 data-text="Beauty Advisor">
           <span className={styles.sparkles}>✨</span>

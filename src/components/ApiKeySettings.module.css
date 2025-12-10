@@ -1,0 +1,415 @@
+/* ==================== FLOATING BUTTON ==================== */
+.floatingButton {
+  position: fixed;
+  top: 80px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d4af37, #e5c158);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 998;
+  animation: floatIn 0.8s ease-out 0.5s both;
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.floatingButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+}
+
+.icon {
+  font-size: 24px;
+}
+
+/* ==================== OVERLAY & MODAL ==================== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+  border-radius: 16px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.closeButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: rotate(90deg);
+}
+
+/* ==================== HEADER ==================== */
+.header {
+  text-align: center;
+  padding: 40px 20px 20px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(16, 185, 129, 0.1));
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, transparent, #d4af37, #10b981, transparent) 1;
+}
+
+.header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2em;
+  font-weight: 500;
+  margin: 0 0 10px;
+  background: linear-gradient(135deg, #d4af37, #10b981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header p {
+  color: #4a4a4a;
+  font-size: 1em;
+  margin: 0;
+}
+
+/* ==================== CONTENT ==================== */
+.content {
+  padding: 30px;
+}
+
+.keySection {
+  margin-bottom: 30px;
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.keyHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.keyHeader h3 {
+  margin: 0;
+  font-size: 1.2em;
+  color: #000;
+}
+
+.badge {
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #10b981, #34d399);
+  color: white;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge.optional {
+  background: #e0e0e0;
+  color: #8a8a8a;
+}
+
+.description {
+  font-size: 14px;
+  color: #4a4a4a;
+  margin: 8px 0 16px;
+}
+
+/* ==================== INPUT GROUP ==================== */
+.inputGroup {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.keyInput {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Courier New', monospace;
+  transition: all 0.3s ease;
+}
+
+.keyInput:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.toggleButton {
+  padding: 12px 16px;
+  background: #f5f5f5;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+.toggleButton:hover {
+  background: #e0e0e0;
+}
+
+.clearButton {
+  padding: 12px 16px;
+  background: #fee;
+  color: #e53e3e;
+  border: 2px solid #fcc;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.clearButton:hover {
+  background: #fcc;
+}
+
+/* ==================== HELP LINK ==================== */
+.helpLink {
+  margin-top: 8px;
+}
+
+.helpLink a {
+  color: #10b981;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.helpLink a:hover {
+  color: #059669;
+  text-decoration: underline;
+}
+
+/* ==================== SAVE MESSAGE ==================== */
+.saveMessage {
+  padding: 12px 20px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  color: #10b981;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 20px;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==================== SECURITY NOTICE ==================== */
+.securityNotice {
+  padding: 16px;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.securityNotice strong {
+  display: block;
+  color: #d4af37;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.securityNotice p {
+  margin: 0;
+  font-size: 13px;
+  color: #4a4a4a;
+  line-height: 1.6;
+}
+
+/* ==================== ACTIONS ==================== */
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.saveButton {
+  flex: 1;
+  padding: 16px;
+  background: linear-gradient(135deg, #10b981, #34d399);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.saveButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.saveButton:disabled {
+  background: #e0e0e0;
+  color: #9a9a9a;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.cancelButton {
+  padding: 16px 24px;
+  background: #f5f5f5;
+  color: #4a4a4a;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancelButton:hover {
+  background: #e0e0e0;
+}
+
+/* ==================== STATUS SECTION ==================== */
+.statusSection {
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 12px;
+}
+
+.statusSection h4 {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: #4a4a4a;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.statusItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.statusActive {
+  color: #10b981;
+  font-size: 18px;
+}
+
+.statusInactive {
+  color: #e53e3e;
+  font-size: 18px;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .floatingButton {
+    top: 70px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .icon {
+    font-size: 20px;
+  }
+
+  .modal {
+    margin: 10px;
+  }
+
+  .content {
+    padding: 20px;
+  }
+
+  .header h2 {
+    font-size: 1.6em;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .statusGrid {
+    grid-template-columns: 1fr;
+  }
+}

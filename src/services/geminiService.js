@@ -3,7 +3,25 @@
  * Uses Google's latest Gemini API for advanced image understanding
  */
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+/**
+ * Get Gemini API key from localStorage or environment
+ */
+function getApiKey() {
+  // First check localStorage (user-configured)
+  const localKey = localStorage.getItem('gemini_api_key');
+  if (localKey) {
+    return localKey;
+  }
+  
+  // Fallback to environment variable
+  const envKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (envKey && envKey !== 'your_gemini_api_key_here') {
+    return envKey;
+  }
+  
+  return null;
+}
+
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
 /**
@@ -13,8 +31,10 @@ const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/
  * @returns {Promise<Object>} - Analysis results
  */
 export async function analyzeImageWithGemini(imageBase64, prompt) {
+  const GEMINI_API_KEY = getApiKey();
+  
   if (!GEMINI_API_KEY) {
-    throw new Error('Gemini API key is not configured');
+    throw new Error('Gemini API key is not configured. Please add your API key in Settings (🔑 icon)');
   }
 
   try {
@@ -317,7 +337,8 @@ Return ONLY valid JSON with this structure:
  * @returns {boolean} - Whether API key is configured
  */
 export function isGeminiAvailable() {
-  return !!GEMINI_API_KEY && GEMINI_API_KEY !== 'your_gemini_api_key_here';
+  const apiKey = getApiKey();
+  return !!apiKey;
 }
 
 /**

@@ -13,6 +13,8 @@ function App() {
   const [selectedPrompt, setSelectedPrompt] = useState('');
   const [tokenCount, setTokenCount] = useState(0);
   const [error, setError] = useState(null);
+  const [activeDrawer, setActiveDrawer] = useState(null); // 'guide' | 'products' | null
+  const [isMobile, setIsMobile] = useState(false);
 
   const MAX_TOKENS_PER_HOUR = 20000;
   const RATE_LIMIT_DURATION = 3600000; // 1 hour in milliseconds
@@ -53,6 +55,14 @@ function App() {
       setError('OpenAI API key is missing. Please check your environment variables.');
       console.error('OpenAI API key is not set');
     }
+
+    // Check if mobile on mount and resize
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const getApiKey = () => {
@@ -282,6 +292,44 @@ function App() {
     }
   };
 
+  const openDrawer = (drawer) => {
+    setActiveDrawer(drawer);
+    // Prevent body scroll when drawer is open
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeDrawer = () => {
+    setActiveDrawer(null);
+    document.body.style.overflow = '';
+  };
+
+  // Handle touch events for swipe-to-close
+  const handleDrawerTouchStart = (e) => {
+    const touch = e.touches[0];
+    e.currentTarget.dataset.startY = touch.clientY;
+  };
+
+  const handleDrawerTouchMove = (e) => {
+    const touch = e.touches[0];
+    const startY = parseFloat(e.currentTarget.dataset.startY);
+    const deltaY = touch.clientY - startY;
+    
+    if (deltaY > 0) {
+      e.currentTarget.style.transform = `translateY(${deltaY}px)`;
+    }
+  };
+
+  const handleDrawerTouchEnd = (e) => {
+    const startY = parseFloat(e.currentTarget.dataset.startY);
+    const endY = e.changedTouches[0].clientY;
+    const deltaY = endY - startY;
+    
+    if (deltaY > 100) {
+      closeDrawer();
+    }
+    e.currentTarget.style.transform = '';
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -317,6 +365,85 @@ function App() {
         <aside className={styles.sidebar}>
           <ProductRecommendations messages={messages} />
         </aside>
+      </div>
+
+      {/* Mobile Navigation */}
+      {isMobile && (
+        <nav className={`${styles.mobileNav} ${styles.visible}`}>
+          <button
+            className={`${styles.mobileNavButton} ${!activeDrawer ? styles.active : ''}`}
+            onClick={closeDrawer}
+            aria-label="Chat"
+          >
+            <span className={styles.mobileNavIcon}>💬</span>
+            <span className={styles.mobileNavLabel}>Chat</span>
+          </button>
+          <button
+            className={`${styles.mobileNavButton} ${activeDrawer === 'guide' ? styles.active : ''}`}
+            onClick={() => openDrawer('guide')}
+            aria-label="Welcome Guide"
+          >
+            <span className={styles.mobileNavIcon}>✨</span>
+            <span className={styles.mobileNavLabel}>Guide</span>
+          </button>
+          <button
+            className={`${styles.mobileNavButton} ${activeDrawer === 'products' ? styles.active : ''}`}
+            onClick={() => openDrawer('products')}
+            aria-label="Product Recommendations"
+          >
+            <span className={styles.mobileNavIcon}>💫</span>
+            <span className={styles.mobileNavLabel}>Products</span>
+          </button>
+        </nav>
+      )}
+
+      {/* Overlay for drawers */}
+      <div 
+        className={`${styles.overlay} ${activeDrawer ? styles.visible : ''}`}
+        onClick={closeDrawer}
+        aria-hidden={!activeDrawer}
+      />
+
+      {/* Welcome Guide Drawer */}
+      <div 
+        className={`${styles.drawer} ${activeDrawer === 'guide' ? styles.visible : ''}`}
+        onTouchStart={handleDrawerTouchStart}
+        onTouchMove={handleDrawerTouchMove}
+        onTouchEnd={handleDrawerTouchEnd}
+        role="dialog"
+        aria-label="Welcome Guide"
+        aria-hidden={activeDrawer !== 'guide'}
+      >
+        <div className={styles.drawerHandle} />
+        <button 
+          className={styles.drawerClose}
+          onClick={closeDrawer}
+          aria-label="Close drawer"
+        >
+          ✕
+        </button>
+        <WelcomeGuide isMobile={true} />
+      </div>
+
+      {/* Product Recommendations Drawer */}
+      <div 
+        className={`${styles.drawer} ${activeDrawer === 'products' ? styles.visible : ''}`}
+        onTouchStart={handleDrawerTouchStart}
+        onTouchMove={handleDrawerTouchMove}
+        onTouchEnd={handleDrawerTouchEnd}
+        role="dialog"
+        aria-label="Product Recommendations"
+        aria-hidden={activeDrawer !== 'products'}
+      >
+        <div className={styles.drawerHandle} />
+        <button 
+          className={styles.drawerClose}
+          onClick={closeDrawer}
+          aria-label="Close drawer"
+        >
+          ✕
+        </button>
+        <ProductRecommendations messages={messages} isMobile={true} />
       </div>
     </div>
   );

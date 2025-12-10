@@ -258,6 +258,16 @@
   }
 }
 
+@media (max-width: 1024px) {
+  /* Mobile Drawer Mode */
+  .recommendations.mobileDrawer {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
+}
+
 @media (max-width: 768px) {
   .recommendations {
     padding: 18px;

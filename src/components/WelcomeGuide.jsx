@@ -1,8 +1,8 @@
 import styles from './WelcomeGuide.module.css';
 
-export default function WelcomeGuide() {
+export default function WelcomeGuide({ isMobile }) {
   return (
-    <div className={styles.guide}>
+    <div className={`${styles.guide} ${isMobile ? styles.mobileDrawer : ''}`}>
       <h2>✨ Welcome to Beauty Advisor!</h2>
       <div className={styles.steps}>
         <div className={styles.step}>

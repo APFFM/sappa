@@ -1,3 +1,60 @@
+/* ==================== CSS CUSTOM PROPERTIES (DESIGN SYSTEM) ==================== */
+:root {
+  /* Colors */
+  --color-primary: #d4698e;
+  --color-primary-light: #f4a7c0;
+  --color-primary-dark: #b85578;
+  --color-secondary: #e58fb1;
+  --color-background: #fff9fb;
+  --color-surface: #ffffff;
+  --color-text-primary: #4a3545;
+  --color-text-secondary: #7a5a6b;
+  --color-text-muted: #9d7b8c;
+  
+  /* Spacing Scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(244, 167, 192, 0.15);
+  --shadow-lg: 0 8px 24px rgba(244, 167, 192, 0.2);
+  
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Mobile Navigation */
+  --mobile-nav-height: 64px;
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  
+  /* Touch Targets */
+  --touch-target-min: 44px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* ==================== ROOT & ANIMATIONS ==================== */
 @keyframes sparkle {
   0%, 100% { 
@@ -397,5 +454,207 @@ h1::after {
   .header::before,
   .header::after {
     display: none;
+  }
+}
+
+/* ==================== MOBILE NAVIGATION ==================== */
+.mobileNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(var(--mobile-nav-height) + var(--safe-area-bottom));
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(244, 167, 192, 0.2);
+  box-shadow: 0 -4px 20px rgba(244, 167, 192, 0.15);
+  display: none;
+  z-index: 100;
+  padding-bottom: var(--safe-area-bottom);
+}
+
+.mobileNav.visible {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  animation: slideUpNav 0.4s var(--transition-slow);
+}
+
+@keyframes slideUpNav {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.mobileNavButton {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: var(--space-sm) var(--space-xs);
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-height: var(--touch-target-min);
+  position: relative;
+}
+
+.mobileNavButton::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(244, 167, 192, 0.1), rgba(255, 214, 232, 0.1));
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  border-radius: var(--radius-md);
+}
+
+.mobileNavButton:active::before {
+  opacity: 1;
+}
+
+.mobileNavButton.active {
+  color: var(--color-primary);
+}
+
+.mobileNavButton.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--color-primary-light), transparent);
+  border-radius: var(--radius-full);
+}
+
+.mobileNavIcon {
+  font-size: 24px;
+  transition: transform var(--transition-fast);
+}
+
+.mobileNavButton:active .mobileNavIcon {
+  transform: scale(0.9);
+}
+
+.mobileNavButton.active .mobileNavIcon {
+  transform: scale(1.1);
+}
+
+.mobileNavLabel {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ==================== DRAWER & OVERLAY ==================== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(74, 53, 69, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 200;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  pointer-events: none;
+}
+
+.overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 85vh;
+  background: var(--color-surface);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow: var(--shadow-lg);
+  z-index: 201;
+  transform: translateY(100%);
+  transition: transform var(--transition-slow);
+  overflow-y: auto;
+  padding: var(--space-lg) var(--space-lg) calc(var(--space-lg) + var(--mobile-nav-height) + var(--safe-area-bottom));
+}
+
+.drawer.visible {
+  transform: translateY(0);
+}
+
+.drawerHandle {
+  width: 40px;
+  height: 4px;
+  background: var(--color-text-muted);
+  opacity: 0.3;
+  border-radius: var(--radius-full);
+  margin: 0 auto var(--space-md);
+  cursor: grab;
+}
+
+.drawerHandle:active {
+  cursor: grabbing;
+}
+
+.drawerClose {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(244, 167, 192, 0.1);
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--color-primary);
+  font-size: 20px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  z-index: 1;
+}
+
+.drawerClose:hover {
+  background: rgba(244, 167, 192, 0.2);
+  transform: scale(1.1) rotate(90deg);
+}
+
+.drawerClose:active {
+  transform: scale(0.95);
+}
+
+/* ==================== MOBILE ADJUSTMENTS ==================== */
+@media (max-width: 1024px) {
+  .container {
+    padding-bottom: calc(var(--mobile-nav-height) + var(--safe-area-bottom) + 20px);
+  }
+  
+  .mobileNav {
+    display: flex;
+  }
+  
+  /* Reduce background animation intensity on mobile */
+  .container {
+    animation: gradientShift 30s ease infinite;
+  }
+  
+  .container::before {
+    opacity: 0.5;
   }
 }

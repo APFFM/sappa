@@ -213,6 +213,14 @@
   .guide {
     max-width: 100%;
   }
+  
+  /* Mobile Drawer Mode */
+  .guide.mobileDrawer {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
 }
 
 @media (max-width: 768px) {

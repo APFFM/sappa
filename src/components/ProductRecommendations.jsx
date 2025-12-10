@@ -142,7 +142,7 @@ const COMMON_TRIGGERS = {
   'moisture': 'hydration'
 };
 
-export default function ProductRecommendations({ messages }) {
+export default function ProductRecommendations({ messages, isMobile }) {
   const [recommendations, setRecommendations] = useState([]);
   const [debugInfo, setDebugInfo] = useState('');
 
@@ -176,7 +176,7 @@ export default function ProductRecommendations({ messages }) {
   }, [messages]);
 
   return (
-    <div className={styles.recommendations}>
+    <div className={`${styles.recommendations} ${isMobile ? styles.mobileDrawer : ''}`}>
       <h3>💫 Recommended Products</h3>
       {recommendations && recommendations.length > 0 ? (
         <>

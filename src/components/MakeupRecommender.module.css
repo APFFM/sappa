@@ -1,0 +1,615 @@
+/* ==================== OVERLAY & MODAL ==================== */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  backdrop-filter: blur(5px);
+}
+
+.modal {
+  background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+}
+
+.closeButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+/* ==================== HEADER ==================== */
+.header {
+  text-align: center;
+  padding: 24px 24px 0;
+}
+
+.header h2 {
+  font-size: 1.8rem;
+  margin: 0 0 8px;
+  background: linear-gradient(135deg, #e91e63, #9c27b0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header p {
+  color: #666;
+  margin: 0;
+}
+
+/* ==================== PROGRESS STEPS ==================== */
+.steps {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #f0f0f0;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #888;
+  transition: all 0.3s;
+}
+
+.step span {
+  width: 24px;
+  height: 24px;
+  background: #ddd;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.step.active {
+  background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+  color: #c2185b;
+}
+
+.step.active span {
+  background: #e91e63;
+  color: white;
+}
+
+/* ==================== CONTENT ==================== */
+.content {
+  padding: 0 24px 24px;
+}
+
+.error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* ==================== SECTIONS ==================== */
+.section {
+  margin-bottom: 24px;
+}
+
+.section h3 {
+  font-size: 1rem;
+  margin: 0 0 12px;
+  color: #333;
+}
+
+/* ==================== OPTION GRID ==================== */
+.optionGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.optionCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  background: white;
+  border: 2px solid #eee;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.optionCard:hover {
+  border-color: #f48fb1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(244, 143, 177, 0.2);
+}
+
+.optionCard.selected {
+  border-color: #e91e63;
+  background: linear-gradient(135deg, #fce4ec, #fff);
+  box-shadow: 0 4px 16px rgba(233, 30, 99, 0.2);
+}
+
+.optionIcon {
+  font-size: 1.5rem;
+}
+
+.optionName {
+  font-size: 0.75rem;
+  text-align: center;
+  color: #555;
+}
+
+/* ==================== SKIN TONE ==================== */
+.skinToneGrid {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.skinToneButton {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.skinToneButton:hover {
+  transform: scale(1.15);
+}
+
+.skinToneButton.selected {
+  border-color: #e91e63;
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.3);
+}
+
+/* ==================== INTENSITY ==================== */
+.intensityControl {
+  padding: 0 8px;
+}
+
+.intensitySlider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #fce4ec, #e91e63);
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.intensitySlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid #e91e63;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.intensityLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* ==================== CUSTOM NOTES ==================== */
+.customNotes {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #eee;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  resize: vertical;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.customNotes:focus {
+  outline: none;
+  border-color: #f48fb1;
+}
+
+.customNotes::placeholder {
+  color: #aaa;
+}
+
+/* ==================== BUTTONS ==================== */
+.nextButton,
+.generateButton,
+.backButton,
+.downloadButton,
+.regenerateButton {
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.nextButton,
+.generateButton {
+  background: linear-gradient(135deg, #e91e63, #c2185b);
+  color: white;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.nextButton:hover:not(:disabled),
+.generateButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
+}
+
+.nextButton:disabled,
+.generateButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.backButton {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.backButton:hover {
+  background: #eee;
+}
+
+.downloadButton {
+  background: linear-gradient(135deg, #4caf50, #388e3c);
+  color: white;
+}
+
+.downloadButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.regenerateButton {
+  background: linear-gradient(135deg, #ff9800, #f57c00);
+  color: white;
+}
+
+.regenerateButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.buttonGroup > * {
+  flex: 1;
+  min-width: 120px;
+}
+
+/* ==================== UPLOAD STEP ==================== */
+.uploadStep {
+  text-align: center;
+}
+
+.uploadArea {
+  margin-bottom: 20px;
+}
+
+.uploadLabel {
+  display: block;
+  border: 3px dashed #ddd;
+  border-radius: 16px;
+  padding: 40px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.uploadLabel:hover {
+  border-color: #f48fb1;
+  background: #fce4ec;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.uploadIcon {
+  font-size: 3rem;
+}
+
+.uploadHint {
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.previewContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.previewImage {
+  max-width: 300px;
+  max-height: 300px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.changePhotoButton {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.changePhotoButton:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+/* ==================== SUMMARY CARD ==================== */
+.summaryCard {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: left;
+}
+
+.summaryCard h4 {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.summaryItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.summaryTag {
+  background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #c2185b;
+}
+
+/* ==================== RESULT STEP ==================== */
+.resultStep {
+  text-align: center;
+}
+
+.resultImages {
+  margin-bottom: 24px;
+}
+
+.beforeAfter {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.imageBox {
+  position: relative;
+}
+
+.imageBox img {
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.imageLabel {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
+/* ==================== RECOMMENDATIONS ==================== */
+.recommendationsCard {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.recommendationsCard h4 {
+  margin: 0 0 16px;
+  text-align: center;
+}
+
+.recGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.recItem {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.recIcon {
+  font-size: 1.5rem;
+}
+
+.recItem strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.recItem p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.tips {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.tips strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.tips ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.tips li {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+/* ==================== SPINNER ==================== */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .modal {
+    max-height: 95vh;
+    border-radius: 20px 20px 0 0;
+    margin-top: auto;
+  }
+
+  .optionGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .beforeAfter {
+    grid-template-columns: 1fr;
+  }
+
+  .recGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .steps {
+    flex-wrap: wrap;
+  }
+
+  .step {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+  }
+
+  .buttonGroup > * {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h2 {
+    font-size: 1.4rem;
+  }
+
+  .optionCard {
+    padding: 10px 6px;
+  }
+
+  .optionIcon {
+    font-size: 1.3rem;
+  }
+
+  .optionName {
+    font-size: 0.7rem;
+  }
+}

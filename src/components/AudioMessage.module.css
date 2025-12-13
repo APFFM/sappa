@@ -159,6 +159,18 @@
   }
 }
 
+/* ==================== LANGUAGE INDICATOR ==================== */
+.languageIndicator {
+  font-size: 1.2em;
+  opacity: 0.8;
+  cursor: default;
+  transition: opacity 0.2s ease;
+}
+
+.languageIndicator:hover {
+  opacity: 1;
+}
+
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 768px) {
   .playButton {

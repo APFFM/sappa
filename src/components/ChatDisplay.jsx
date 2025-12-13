@@ -48,9 +48,10 @@ export default function ChatDisplay({ messages }) {
                 )}
                 {msg.content}
                 {msg.role === 'assistant' && (
-                  <AudioMessage 
-                    text={msg.audioContent || msg.content} 
+                  <AudioMessage
+                    text={msg.audioContent || msg.content}
                     isSummary={!!msg.audioContent}
+                    language={msg.language || 'en'}
                   />
                 )}
               </div>

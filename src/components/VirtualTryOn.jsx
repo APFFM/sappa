@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import styles from './VirtualTryOn.module.css';
 import { analyzeFacialFeatures, isGeminiAvailable } from '../services/geminiService';
-import { generateMakeupImage, isOpenAIImageAvailable, validateImage } from '../services/openaiImageService';
+import { generateMakeupImage, isGeminiImageAvailable, validateImage } from '../services/geminiImageService';
 
 export default function VirtualTryOn({ originalImage, onClose }) {
   const [selectedLook, setSelectedLook] = useState('natural');
@@ -79,8 +79,8 @@ export default function VirtualTryOn({ originalImage, onClose }) {
   };
 
   const applyMakeup = async () => {
-    if (!isOpenAIImageAvailable()) {
-      setError('OpenAI API key not configured. Please add your API key in Settings to enable makeup generation.');
+    if (!isGeminiImageAvailable()) {
+      setError('Gemini API key not configured. Please add your API key in Settings to enable makeup generation.');
       return;
     }
 
@@ -88,9 +88,9 @@ export default function VirtualTryOn({ originalImage, onClose }) {
     setError(null);
 
     try {
-      console.log('🎨 Starting OpenAI DALL-E makeup generation...');
+      console.log('🎨 Starting Gemini 2.5 Flash Image makeup generation...');
 
-      // Generate makeup image using OpenAI DALL-E
+      // Generate makeup image using Gemini 2.5 Flash Image
       const result = await generateMakeupImage(
         originalImage,
         selectedLook,
@@ -141,7 +141,7 @@ export default function VirtualTryOn({ originalImage, onClose }) {
         
         <div className={styles.header}>
           <h2>✨ AI-Powered Virtual Makeup Try-On</h2>
-          <p>OpenAI gpt-image-1 - Real Photo Editing</p>
+          <p>Gemini 2.5 Flash Image - Real Photo Editing</p>
           {isAnalyzing && (
             <div className={styles.analyzing}>
               <span className={styles.spinner}></span>
@@ -151,9 +151,9 @@ export default function VirtualTryOn({ originalImage, onClose }) {
           {error && (
             <div className={styles.errorBanner}>{error}</div>
           )}
-          {!isOpenAIImageAvailable() && (
+          {!isGeminiImageAvailable() && (
             <div className={styles.warningBanner}>
-              ⚠️ OpenAI API key not configured. Add your API key in Settings to enable AI makeup generation.
+              ⚠️ Gemini API key not configured. Add your API key in Settings to enable AI makeup generation.
             </div>
           )}
         </div>
@@ -203,7 +203,7 @@ export default function VirtualTryOn({ originalImage, onClose }) {
                 {generatedImage && (
                   <div className={styles.guidePreview}>
                     <strong>✨ Your Photo with AI Makeup</strong>
-                    <p>Edited by OpenAI gpt-image-1</p>
+                    <p>Edited by Gemini 2.5 Flash Image</p>
                     <p>Look: {selectedLook} | Intensity: {intensity}%</p>
                   </div>
                 )}
@@ -304,12 +304,12 @@ export default function VirtualTryOn({ originalImage, onClose }) {
               <button
                 className={styles.applyButton}
                 onClick={applyMakeup}
-                disabled={isProcessing || isAnalyzing || !isOpenAIImageAvailable()}
+                disabled={isProcessing || isAnalyzing || !isGeminiImageAvailable()}
               >
                 {isProcessing ? (
                   <>
                     <span className={styles.spinner}></span>
-                    Generating with OpenAI...
+                    Generating with Gemini...
                   </>
                 ) : (
                   <>
@@ -341,8 +341,8 @@ export default function VirtualTryOn({ originalImage, onClose }) {
             <div className={styles.premiumBadge}>
               <span className={styles.premiumIcon}>👑</span>
               <div className={styles.premiumText}>
-                <strong>Premium AI Feature - OpenAI gpt-image-1</strong>
-                <p>Real photo editing • Preserves your face • Works worldwide</p>
+                <strong>Premium AI Feature - Gemini 2.5 Flash Image</strong>
+                <p>Real photo editing • Preserves your face • Professional results</p>
               </div>
             </div>
           </div>

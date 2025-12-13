@@ -5,7 +5,7 @@
  */
 
 // Use Gemini 2.5 Flash Image - the production-ready model for image editing
-const GEMINI_IMAGE_MODEL = 'gemini-2.5-flash-preview-05-20';
+const GEMINI_IMAGE_MODEL = 'gemini-2.5-flash-image';
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_IMAGE_MODEL}:generateContent`;
 
 /**

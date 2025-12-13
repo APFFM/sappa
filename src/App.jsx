@@ -8,7 +8,9 @@ import ProductRecommendations from './components/ProductRecommendations';
 import ThemeToggle from './components/ThemeToggle';
 import SkinAnalysisDashboard from './components/SkinAnalysisDashboard';
 import ApiKeySettings from './components/ApiKeySettings';
+import MakeupRecommender from './components/MakeupRecommender';
 import styles from './App.module.css';
+import { detectLanguage, getLanguageInstruction, getLanguageName } from './services/languageService';
 
 function App() {
   const [messages, setMessages] = useState(() => {
@@ -27,6 +29,7 @@ function App() {
   const [error, setError] = useState(null);
   const [activeDrawer, setActiveDrawer] = useState(null); // 'guide' | 'products' | null
   const [isMobile, setIsMobile] = useState(false);
+  const [showMakeupRecommender, setShowMakeupRecommender] = useState(false);
 
   const MAX_TOKENS_PER_HOUR = 20000;
   const RATE_LIMIT_DURATION = 3600000; // 1 hour in milliseconds
@@ -189,7 +192,7 @@ function App() {
   const handleSubmit = async (message, image) => {
     setError(null);
     setIsLoading(true);
-    
+
     try {
       const apiKey = getApiKey();
       if (tokenCount >= MAX_TOKENS_PER_HOUR) {
@@ -207,12 +210,17 @@ function App() {
       // Construct context-aware prompt
       const userMessage = selectedPrompt || message;
 
+      // Detect user's language and get instruction
+      const detectedLang = detectLanguage(userMessage);
+      const languageInstruction = getLanguageInstruction(detectedLang);
+      console.log('Detected language:', getLanguageName(detectedLang));
+
       const payload = {
         model: "gpt-4-turbo-2024-04-09",
         messages: [
           {
             role: "system",
-            content: `You are a friendly, enthusiastic beauty advisor - think of a supportive best friend or a Gossip Girl-style narrator, but focused on beauty and self-care. 
+            content: `You are a friendly, enthusiastic beauty advisor - think of a supportive best friend or a Gossip Girl-style narrator, but focused on beauty and self-care.
 
           Communication Style:
           - Use casual, warm, and engaging language
@@ -222,7 +230,7 @@ function App() {
           - Keep a positive, energetic tone
 
           Response Structure:
-          1. Start with "✨ Hey beautiful!" or a similar warm greeting
+          1. Start with "✨ Hey beautiful!" or a similar warm greeting (adapt greeting to user's language)
           2. Give a genuine, specific compliment
           3. Share advice in a conversational way
           4. End with an encouraging message and a friendly sign-off
@@ -235,7 +243,7 @@ function App() {
           - End on a positive, uplifting note
 
           Example tone:
-          "✨ Hey gorgeous! I'm loving your natural glow! Let's chat about how to enhance that radiance even more..."`
+          "✨ Hey gorgeous! I'm loving your natural glow! Let's chat about how to enhance that radiance even more..."${languageInstruction}`
           },
           {
             role: "user",
@@ -285,17 +293,19 @@ function App() {
         const fullContent = data.choices[0].message.content;
         const formattedContent = formatResponse(fullContent);
         const audioSummary = createSummary(fullContent);
-        
-        setMessages([...messages, 
-          { 
-            role: 'user', 
+
+        setMessages([...messages,
+          {
+            role: 'user',
             content: message,
-            image: image 
+            image: image,
+            language: detectedLang
           },
-          { 
-            role: 'assistant', 
+          {
+            role: 'assistant',
             content: formattedContent,
-            audioContent: audioSummary
+            audioContent: audioSummary,
+            language: detectedLang // Pass language to assistant message for TTS
           }
         ]);
         updateTokenCount(data.usage.total_tokens);
@@ -366,6 +376,13 @@ function App() {
     <div className={styles.container}>
       <ThemeToggle />
       <ApiKeySettings />
+      <button
+        className={styles.makeupRecommenderButton}
+        onClick={() => setShowMakeupRecommender(true)}
+        title="Personalized Makeup Recommender"
+      >
+        💄
+      </button>
       <div className={styles.header}>
         <h1 data-text="Beauty Advisor">
           <span className={styles.sparkles}>✨</span>
@@ -482,6 +499,13 @@ function App() {
 
       {/* Skin Analysis Dashboard */}
       <SkinAnalysisDashboard messages={messages} />
+
+      {/* Makeup Recommender Modal */}
+      {showMakeupRecommender && (
+        <MakeupRecommender
+          onClose={() => setShowMakeupRecommender(false)}
+        />
+      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 /**
  * OpenAI Image Service
- * Uses OpenAI's DALL-E and GPT-4 Vision for makeup generation
- * Works in all regions including Europe
+ * Uses OpenAI's gpt-image-1 model for real image editing
+ * Edits your actual photo with makeup - works worldwide
  */
 
 /**
@@ -24,11 +24,103 @@ function getApiKey() {
 }
 
 /**
- * Generate makeup-applied image using OpenAI
- * Uses GPT-4 Vision to create a detailed makeup description,
- * then generates a new styled image with DALL-E
+ * Convert base64 data URL to a File object
+ */
+function base64ToFile(base64DataUrl, filename = 'image.png') {
+  // Extract the base64 data and mime type
+  const [header, base64Data] = base64DataUrl.split(',');
+  const mimeMatch = header.match(/data:(.*?);/);
+  const mimeType = mimeMatch ? mimeMatch[1] : 'image/png';
+
+  // Convert base64 to binary
+  const binaryString = atob(base64Data);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+
+  // Create a Blob and then a File
+  const blob = new Blob([bytes], { type: mimeType });
+  return new File([blob], filename, { type: mimeType });
+}
+
+/**
+ * Build makeup editing prompt based on look type and intensity
+ */
+function buildMakeupPrompt(lookType, intensity, facialAnalysis) {
+  const intensityDesc = intensity < 35 ? 'subtle and natural' :
+                        intensity > 65 ? 'bold and dramatic' : 'balanced and elegant';
+
+  const lookPrompts = {
+    natural: `Apply natural, everyday makeup to this person's face. Include:
+- Light, skin-matching foundation with natural finish
+- Soft peachy-pink blush on cheeks
+- Subtle brown eyeshadow with light shimmer
+- Natural pink lip color
+- Light mascara for defined lashes
+- Soft brow fill
+The look should be fresh and enhance natural beauty.`,
+
+    glam: `Apply glamorous makeup to this person's face. Include:
+- Full coverage foundation with flawless finish
+- Defined contouring on cheekbones and jawline
+- Dramatic smoky eyeshadow with shimmer and glitter
+- Bold winged eyeliner
+- Full, voluminous lashes
+- Statement red or deep pink lipstick
+- Strong highlighting on cheekbones
+The look should be bold, sophisticated, and camera-ready.`,
+
+    fresh: `Apply fresh, dewy makeup to this person's face. Include:
+- Light, breathable tinted moisturizer
+- Cream blush for a healthy flush
+- Minimal eye makeup with soft shimmer
+- Glossy nude or pink lip
+- Natural-looking brows
+- Subtle highlighter for glow
+The look should be minimal, youthful, and radiant.`,
+
+    evening: `Apply elegant evening makeup to this person's face. Include:
+- Medium coverage foundation with satin finish
+- Sculpted contouring
+- Rich eyeshadow in burgundy, plum, or bronze tones
+- Defined eyeliner
+- Full lashes
+- Berry, wine, or classic red lip color
+- Luminous highlighting
+The look should be sophisticated and refined.`,
+
+    radiant: `Apply radiant, glowing makeup to this person's face. Include:
+- Dewy foundation with luminous finish
+- Warm cream blush
+- Golden and bronze eyeshadow tones
+- Glossy lips in nude or coral
+- Strategic highlighting on all high points
+- Sun-kissed warmth throughout
+The look should be healthy, glowing, and luminous.`
+  };
+
+  let prompt = lookPrompts[lookType] || lookPrompts.natural;
+  prompt += `\n\nMakeup intensity: ${intensityDesc}.`;
+
+  // Add personalization from facial analysis
+  if (facialAnalysis?.analysis) {
+    const { skinTone, undertone, faceShape } = facialAnalysis.analysis;
+    if (skinTone) prompt += `\nMatch products to ${skinTone} skin tone.`;
+    if (undertone) prompt += `\nUse ${undertone} undertone-friendly colors.`;
+    if (faceShape) prompt += `\nApply contouring suitable for ${faceShape} face shape.`;
+  }
+
+  prompt += `\n\nIMPORTANT: Keep the person's identity, features, expression, and pose EXACTLY the same. Only add makeup - do not change face structure, hair, clothing, or background. The result should look like the same person with professional makeup applied.`;
+
+  return prompt;
+}
+
+/**
+ * Generate makeup-applied image using OpenAI gpt-image-1 edit endpoint
+ * This actually edits your photo instead of generating a new one
  *
- * @param {string} imageBase64 - Base64 encoded image (with or without data URL prefix)
+ * @param {string} imageBase64 - Base64 encoded image (with data URL prefix)
  * @param {string} lookType - Type of makeup look (natural, glam, fresh, evening, radiant)
  * @param {number} intensity - Makeup intensity (0-100)
  * @param {Object} facialAnalysis - Optional facial analysis for personalization
@@ -42,145 +134,72 @@ export async function generateMakeupImage(imageBase64, lookType, intensity, faci
   }
 
   try {
-    console.log('Generating makeup with OpenAI...');
+    console.log('Editing image with OpenAI gpt-image-1...');
     console.log('Look type:', lookType, 'Intensity:', intensity);
 
-    // Step 1: Use GPT-4 Vision to analyze the face and create a detailed description
-    const faceDescription = await analyzeFaceForMakeup(apiKey, imageBase64, lookType, intensity, facialAnalysis);
+    // Convert base64 to File object
+    const imageFile = base64ToFile(imageBase64, 'photo.png');
 
-    // Step 2: Generate new image with DALL-E based on the description
-    const generatedImage = await generateWithDALLE(apiKey, faceDescription, lookType, intensity);
+    // Build the makeup prompt
+    const prompt = buildMakeupPrompt(lookType, intensity, facialAnalysis);
 
-    console.log('✓ Makeup image generated successfully!');
-    return generatedImage;
+    // Create FormData for the edit request
+    const formData = new FormData();
+    formData.append('image', imageFile);
+    formData.append('model', 'gpt-image-1');
+    formData.append('prompt', prompt);
+    formData.append('size', '1024x1024');
+    formData.append('quality', 'high');
+    formData.append('n', '1');
+    formData.append('response_format', 'b64_json'); // Get base64 directly to avoid CORS issues
+
+    // Call the OpenAI edit endpoint
+    const response = await fetch('https://api.openai.com/v1/images/edits', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        // Don't set Content-Type - browser sets it automatically with boundary for FormData
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`OpenAI error: ${errorData.error?.message || response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    // Extract the edited image
+    if (data.data && data.data[0]) {
+      // Check if we got base64 or URL
+      if (data.data[0].b64_json) {
+        console.log('✓ Makeup applied successfully with gpt-image-1!');
+        return `data:image/png;base64,${data.data[0].b64_json}`;
+      } else if (data.data[0].url) {
+        // If we got a URL, fetch it and convert to base64
+        console.log('✓ Makeup applied successfully! Fetching result...');
+        const imageResponse = await fetch(data.data[0].url);
+        const blob = await imageResponse.blob();
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      }
+    }
+
+    throw new Error('No image data in response');
 
   } catch (error) {
-    console.error('OpenAI makeup generation failed:', error);
+    console.error('OpenAI image edit failed:', error);
     throw new Error(`Failed to generate makeup image: ${error.message}`);
   }
 }
 
 /**
- * Analyze face using GPT-4 Vision and create makeup prompt
- */
-async function analyzeFaceForMakeup(apiKey, imageBase64, lookType, intensity, facialAnalysis) {
-  // Remove data URL prefix if present
-  let base64Data = imageBase64;
-  if (imageBase64.includes('base64,')) {
-    base64Data = imageBase64.split('base64,')[1];
-  }
-
-  // Determine mime type
-  let mimeType = 'image/jpeg';
-  if (imageBase64.includes('image/png')) {
-    mimeType = 'image/png';
-  }
-
-  const intensityDesc = intensity < 35 ? 'subtle and natural' : intensity > 65 ? 'bold and dramatic' : 'balanced and elegant';
-
-  const lookDescriptions = {
-    natural: 'natural, everyday makeup with soft colors and minimal coverage',
-    glam: 'glamorous makeup with defined features, shimmer, and bold colors',
-    fresh: 'fresh, dewy look with light coverage and healthy glow',
-    evening: 'sophisticated evening makeup with rich colors and elegant finish',
-    radiant: 'radiant, glowing makeup with warm tones and luminous highlights'
-  };
-
-  const prompt = `Analyze this person's face and describe them in detail for an artist to recreate with ${lookDescriptions[lookType] || lookDescriptions.natural} makeup applied.
-
-Include:
-1. Face shape, skin tone, and features
-2. Hair color and style
-3. Eye color and shape
-4. Current expression and pose
-5. Lighting and background
-
-The makeup should be ${intensityDesc}.
-
-${facialAnalysis ? `Additional context: Skin type is ${facialAnalysis.analysis?.skinType}, undertone is ${facialAnalysis.analysis?.undertone}.` : ''}
-
-Create a detailed, artistic description that captures the person's likeness with beautiful ${lookType} makeup applied. Focus on how the makeup enhances their natural features.`;
-
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: 'gpt-4o',
-      messages: [
-        {
-          role: 'user',
-          content: [
-            { type: 'text', text: prompt },
-            {
-              type: 'image_url',
-              image_url: {
-                url: `data:${mimeType};base64,${base64Data}`,
-                detail: 'high'
-              }
-            }
-          ]
-        }
-      ],
-      max_tokens: 500,
-    }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(`GPT-4 Vision error: ${errorData.error?.message || response.statusText}`);
-  }
-
-  const data = await response.json();
-  return data.choices[0].message.content;
-}
-
-/**
- * Generate image with DALL-E 3
- */
-async function generateWithDALLE(apiKey, faceDescription, lookType, intensity) {
-  const intensityDesc = intensity < 35 ? 'subtle' : intensity > 65 ? 'bold' : 'moderate';
-
-  const prompt = `Professional beauty portrait photograph: ${faceDescription}
-
-Style: High-end beauty photography, professional makeup look (${lookType}), ${intensityDesc} intensity.
-Quality: Ultra realistic, studio lighting, sharp focus, professional beauty retouching.
-Important: Photorealistic portrait, not illustration. Natural skin texture, professional makeup application.`;
-
-  const response = await fetch('https://api.openai.com/v1/images/generations', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: 'dall-e-3',
-      prompt: prompt.substring(0, 4000), // DALL-E 3 has a prompt limit
-      n: 1,
-      size: '1024x1024',
-      quality: 'hd',
-      response_format: 'b64_json',
-    }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(`DALL-E error: ${errorData.error?.message || response.statusText}`);
-  }
-
-  const data = await response.json();
-
-  if (data.data && data.data[0]?.b64_json) {
-    return `data:image/png;base64,${data.data[0].b64_json}`;
-  }
-
-  throw new Error('No image data in DALL-E response');
-}
-
-/**
- * Check if OpenAI Image generation is available
+ * Check if OpenAI Image editing is available
  */
 export function isOpenAIImageAvailable() {
   const apiKey = getApiKey();
@@ -214,13 +233,13 @@ export function validateImage(imageBase64) {
     return { valid: false, error: 'Image must be in data URL format (PNG, JPEG, GIF, or WebP)' };
   }
 
-  // Check size (max 20MB for OpenAI)
+  // Check size (max 50MB for gpt-image-1)
   const base64Data = imageBase64.split(',')[1] || '';
   const sizeInBytes = (base64Data.length * 3) / 4;
   const sizeInMB = sizeInBytes / (1024 * 1024);
 
-  if (sizeInMB > 20) {
-    return { valid: false, error: 'Image too large (max 20MB). Please compress or resize your image.' };
+  if (sizeInMB > 50) {
+    return { valid: false, error: 'Image too large (max 50MB). Please compress or resize your image.' };
   }
 
   return { valid: true };

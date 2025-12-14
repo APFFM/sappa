@@ -799,6 +799,196 @@
   .adviceSection {
     grid-template-columns: 1fr;
   }
+
+  .budgetOptions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tryOnComparison {
+    flex-direction: column;
+  }
+
+  .tryOnArrow {
+    transform: rotate(90deg);
+  }
+}
+
+/* ==================== BUDGET SELECTION ==================== */
+.budgetOptions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.budgetCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 12px;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.budgetCard:hover {
+  border-color: #667eea;
+  background: #f5f7ff;
+  transform: translateY(-2px);
+}
+
+.selectedBudget {
+  border-color: #667eea;
+  background: linear-gradient(135deg, #f5f7ff, #fef5ff);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.budgetEmoji {
+  font-size: 2rem;
+}
+
+.budgetName {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.budgetRange {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+/* ==================== VIRTUAL TRY-ON ==================== */
+.tryOnButton {
+  flex: 2;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tryOnButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+}
+
+.tryOnButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tryOnResults {
+  margin-top: 32px;
+  padding: 24px;
+  background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+  border-radius: 16px;
+  border: 2px solid #10b981;
+}
+
+.tryOnResults h4 {
+  margin: 0 0 20px;
+  color: #059669;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.tryOnComparison {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.tryOnCard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.tryOnLabel {
+  font-weight: 600;
+  color: #059669;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.tryOnImage {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tryOnArrow {
+  font-size: 2rem;
+  color: #10b981;
+  font-weight: bold;
+}
+
+.tryOnDescription {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tryOnDescription p {
+  margin: 0 0 16px;
+  color: #374151;
+  line-height: 1.6;
+}
+
+.improvementsList {
+  margin-top: 12px;
+}
+
+.improvementsList strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #059669;
+}
+
+.improvementsList ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #6b7280;
+}
+
+.improvementsList li {
+  margin-bottom: 6px;
+}
+
+.tryOnNote {
+  text-align: center;
+  color: #059669;
+  font-size: 0.9rem;
+  margin: 0;
+  font-style: italic;
+}
+
+.finalActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
 }
 
 @media (max-width: 480px) {

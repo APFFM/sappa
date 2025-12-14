@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import styles from './SkincareRecommender.module.css';
-import { analyzeSkinFromImage, getSkincareRoutine, getProductSearchUrls } from '../services/skincareAnalysisService';
+import { analyzeSkinFromImage, getSkincareRoutine } from '../services/skincareAnalysisService';
+import { getCountryShoppingLinks, getBudgetTierInfo, normalizeCountryName } from '../services/countryShoppingService';
+import { generateSkincareResults } from '../services/virtualTryOnService';
 
 export default function SkincareRecommender({ onClose }) {
-  const [step, setStep] = useState(1); // 1: upload, 2: location/age, 3: analyzing, 4: results
+  const [step, setStep] = useState(1); // 1: upload, 2: location/age/budget, 3: analyzing, 4: results
   const [uploadedImage, setUploadedImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
 
@@ -12,6 +14,7 @@ export default function SkincareRecommender({ onClose }) {
   const [country, setCountry] = useState('');
   const [manualAge, setManualAge] = useState('');
   const [useAIAge, setUseAIAge] = useState(true);
+  const [budget, setBudget] = useState('middle');
 
   // Analysis results
   const [skinAnalysis, setSkinAnalysis] = useState(null);
@@ -21,6 +24,9 @@ export default function SkincareRecommender({ onClose }) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('morning'); // morning, evening, weekly
+  const [showTryOn, setShowTryOn] = useState(false);
+  const [tryOnResult, setTryOnResult] = useState(null);
+  const [loadingTryOn, setLoadingTryOn] = useState(false);
 
   // Handle image upload and compression
   const compressImage = async (file) => {
@@ -97,10 +103,11 @@ export default function SkincareRecommender({ onClose }) {
       const analysis = await analyzeSkinFromImage(uploadedImage);
       setSkinAnalysis(analysis);
 
-      // Step 2: Get personalized routine
+      // Step 2: Get personalized routine with budget
       const routine = await getSkincareRoutine(
         analysis,
-        { city, country },
+        { city, country: normalizeCountryName(country) },
+        budget,
         !useAIAge && manualAge ? parseInt(manualAge) : null
       );
       setSkincareRoutine(routine);
@@ -115,9 +122,31 @@ export default function SkincareRecommender({ onClose }) {
     }
   };
 
+  // Handle virtual try-on
+  const handleVirtualTryOn = async () => {
+    setLoadingTryOn(true);
+    setError(null);
+
+    try {
+      const result = await generateSkincareResults(
+        uploadedImage,
+        skincareRoutine,
+        skinAnalysis
+      );
+      setTryOnResult(result);
+      setShowTryOn(true);
+    } catch (err) {
+      console.error('Try-on error:', err);
+      setError(`Virtual try-on failed: ${err.message}`);
+    } finally {
+      setLoadingTryOn(false);
+    }
+  };
+
   // Render product card
   const renderProductCard = (stepData, stepNumber) => {
-    const urls = getProductSearchUrls(stepData.searchQuery);
+    const normalizedCountry = normalizeCountryName(country);
+    const shoppingLinks = getCountryShoppingLinks(normalizedCountry, budget, stepData.searchQuery);
 
     return (
       <div className={styles.productCard} key={stepNumber}>
@@ -154,18 +183,11 @@ export default function SkincareRecommender({ onClose }) {
         </div>
 
         <div className={styles.shopLinks}>
-          <a href={urls.amazon} target="_blank" rel="noopener noreferrer" className={styles.shopButton}>
-            Amazon
-          </a>
-          <a href={urls.sephora} target="_blank" rel="noopener noreferrer" className={styles.shopButton}>
-            Sephora
-          </a>
-          <a href={urls.ulta} target="_blank" rel="noopener noreferrer" className={styles.shopButton}>
-            Ulta
-          </a>
-          <a href={urls.lookfantastic} target="_blank" rel="noopener noreferrer" className={styles.shopButton}>
-            LookFantastic
-          </a>
+          {shoppingLinks.map((link) => (
+            <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer" className={styles.shopButton}>
+              {link.name}
+            </a>
+          ))}
         </div>
       </div>
     );
@@ -237,8 +259,8 @@ export default function SkincareRecommender({ onClose }) {
         {/* Step 2: Location and Age Input */}
         {step === 2 && (
           <div className={styles.inputStep}>
-            <h3>📍 Location & Age Information</h3>
-            <p>Help us recommend products available in your area and suitable for your age</p>
+            <h3>📍 Location, Age & Budget</h3>
+            <p>Help us recommend the perfect products for your needs and budget</p>
 
             <div className={styles.formGroup}>
               <label>Location</label>
@@ -291,6 +313,27 @@ export default function SkincareRecommender({ onClose }) {
                   max="120"
                 />
               )}
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>Budget Tier</label>
+              <div className={styles.budgetOptions}>
+                {['budget', 'middle', 'high', 'luxury'].map((tier) => {
+                  const info = getBudgetTierInfo(tier);
+                  return (
+                    <button
+                      key={tier}
+                      className={`${styles.budgetCard} ${budget === tier ? styles.selectedBudget : ''}`}
+                      onClick={() => setBudget(tier)}
+                      type="button"
+                    >
+                      <span className={styles.budgetEmoji}>{info.label.split(' ')[0]}</span>
+                      <span className={styles.budgetName}>{info.label.substring(2)}</span>
+                      <span className={styles.budgetRange}>{info.range}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             <div className={styles.buttonGroup}>
@@ -449,9 +492,9 @@ export default function SkincareRecommender({ onClose }) {
                       </div>
                       <p>{treatment.benefits}</p>
                       <div className={styles.shopLinks}>
-                        {Object.entries(getProductSearchUrls(treatment.searchQuery)).map(([store, url]) => (
-                          <a key={store} href={url} target="_blank" rel="noopener noreferrer" className={styles.shopButton}>
-                            {store.charAt(0).toUpperCase() + store.slice(1)}
+                        {getCountryShoppingLinks(normalizeCountryName(country), budget, treatment.searchQuery).map((link) => (
+                          <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer" className={styles.shopButton}>
+                            {link.name}
                           </a>
                         ))}
                       </div>
@@ -497,16 +540,64 @@ export default function SkincareRecommender({ onClose }) {
             </div>
 
             <div className={styles.finalActions}>
+              <button
+                className={styles.tryOnButton}
+                onClick={handleVirtualTryOn}
+                disabled={loadingTryOn}
+              >
+                {loadingTryOn ? (
+                  <>
+                    <span className={styles.spinner}></span>
+                    Generating Preview...
+                  </>
+                ) : (
+                  <>🎨 See Results Preview</>
+                )}
+              </button>
               <button className={styles.startOverButton} onClick={() => {
                 setStep(1);
                 setSkinAnalysis(null);
                 setSkincareRoutine(null);
                 setUploadedImage(null);
                 setPreviewUrl(null);
+                setTryOnResult(null);
+                setShowTryOn(false);
               }}>
                 ← Start New Analysis
               </button>
             </div>
+
+            {/* Virtual Try-On Results */}
+            {showTryOn && tryOnResult && (
+              <div className={styles.tryOnResults}>
+                <h4>✨ Expected Results After 8-12 Weeks</h4>
+                <div className={styles.tryOnComparison}>
+                  <div className={styles.tryOnCard}>
+                    <span className={styles.tryOnLabel}>Current</span>
+                    <img src={previewUrl} alt="Before" className={styles.tryOnImage} />
+                  </div>
+                  <div className={styles.tryOnArrow}>→</div>
+                  <div className={styles.tryOnCard}>
+                    <span className={styles.tryOnLabel}>With Routine</span>
+                    <div className={styles.tryOnDescription}>
+                      <p>{tryOnResult.description}</p>
+                      <div className={styles.improvementsList}>
+                        <strong>Expected Improvements:</strong>
+                        <ul>
+                          <li>Reduced visibility of concerns</li>
+                          <li>More even skin tone</li>
+                          <li>Improved hydration and glow</li>
+                          <li>Smoother skin texture</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p className={styles.tryOnNote}>
+                  💡 Results vary by individual. Consistency is key for best results!
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>

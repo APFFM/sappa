@@ -25,7 +25,17 @@ export async function getProductRecommendations(lookDetails) {
     throw new Error('Gemini API key not configured');
   }
 
-  const { occasion, personality, makeupType, skinTone, intensity, imageAnalysis } = lookDetails;
+  const { occasion, personality, makeupType, skinTone, intensity, imageAnalysis, budget, country } = lookDetails;
+
+  // Budget tier guidance for makeup
+  const budgetGuidance = {
+    budget: 'Budget-friendly products under $30 each (drugstore brands: Maybelline, L\'Oreal, NYX, e.l.f., ColourPop, Wet n Wild, etc.)',
+    middle: 'Mid-range products $30-80 each (MAC, Urban Decay, Too Faced, Anastasia Beverly Hills, NARS, Benefit, etc.)',
+    high: 'Premium products $80-150 each (Charlotte Tilbury, Natasha Denona, Pat McGrath Labs, Hourglass, Tom Ford, etc.)',
+    luxury: 'Luxury products $150+ each (Tom Ford, Chanel, Dior, Giorgio Armani, La Mer makeup, Sisley, etc.)'
+  };
+
+  const budgetTier = budget || 'middle';
 
   const prompt = `You are a makeup product expert. Based on the following makeup look preferences, recommend specific, real products that can be purchased.
 
@@ -35,9 +45,13 @@ LOOK DETAILS:
 - Makeup Type: ${makeupType || 'Natural'}
 - Skin Tone: ${skinTone || 'Medium'}
 - Intensity: ${intensity || 50}% (${intensity < 35 ? 'subtle' : intensity > 65 ? 'bold' : 'moderate'})
+- Budget Tier: ${budgetTier.toUpperCase()} - ${budgetGuidance[budgetTier.toLowerCase()]}
+- Location: ${country || 'International'}
 ${imageAnalysis ? `- AI Analysis: ${imageAnalysis}` : ''}
 
-Provide product recommendations in the following JSON format. Include REAL product names from actual brands like MAC, NARS, Charlotte Tilbury, Maybelline, L'Oreal, Fenty Beauty, Too Faced, Urban Decay, NYX, etc.
+IMPORTANT: Recommend ONLY products that fit within the ${budgetTier.toUpperCase()} budget tier. All products must be available in ${country || 'major markets'}.
+
+Provide product recommendations in the following JSON format. Include REAL product names from actual brands appropriate for the ${budgetTier} tier:
 
 {
   "foundation": {

@@ -114,7 +114,7 @@ Be specific, accurate, and professional. Focus on visible skin characteristics. 
 /**
  * Get personalized 5-step skincare routine with product recommendations
  */
-export async function getSkincareRoutine(skinAnalysis, location, manualAge = null) {
+export async function getSkincareRoutine(skinAnalysis, location, budget = 'middle', manualAge = null) {
   const apiKey = getGeminiApiKey();
   if (!apiKey) {
     throw new Error('Gemini API key not configured');
@@ -127,6 +127,14 @@ export async function getSkincareRoutine(skinAnalysis, location, manualAge = nul
   const focusAreas = recommendations.focusAreas.join(', ');
   const beneficialIngredients = recommendations.beneficialIngredients.join(', ');
 
+  // Budget tier guidance
+  const budgetGuidance = {
+    budget: 'Budget-friendly products under $50 each (drugstore brands: CeraVe, The Ordinary, Neutrogena, L\'Oreal, Olay, etc.)',
+    middle: 'Mid-range products $50-150 each (Paula\'s Choice, La Roche-Posay, Drunk Elephant, Kiehl\'s, Clinique, etc.)',
+    high: 'Premium products $150-300 each (SK-II, Sunday Riley, Dr. Barbara Sturm, Augustinus Bader, etc.)',
+    luxury: 'Luxury products $300+ each (La Mer, Sisley, La Prairie, Valmont, ReVive, etc.)'
+  };
+
   const prompt = `You are a skincare expert. Create a personalized 5-STEP skincare routine with specific product recommendations.
 
 CLIENT PROFILE:
@@ -135,10 +143,13 @@ CLIENT PROFILE:
 - Skin Tone: ${skinTone}
 - Ethnicity: ${ethnicity}
 - Location: ${location.city}, ${location.country}
+- Budget Tier: ${budget.toUpperCase()} - ${budgetGuidance[budget.toLowerCase()]}
 - Main Concerns: ${concernsList}
 - Skin Texture: ${skinTexture.smoothness}, ${skinTexture.poreSize} pores, ${skinTexture.hydration}
 - Focus Areas: ${focusAreas}
 - Key Ingredients Needed: ${beneficialIngredients}
+
+IMPORTANT: Recommend ONLY products that fit within the ${budget.toUpperCase()} budget tier. All products must be available in ${location.country}.
 
 Provide recommendations in this EXACT JSON format with REAL products available internationally and in ${location.country}:
 

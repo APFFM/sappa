@@ -1003,4 +1003,67 @@
   .buttonGroup {
     flex-direction: column;
   }
+
+  .productsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==================== CURRENT PRODUCTS SECTION ==================== */
+.toggleButton {
+  margin-left: 12px;
+  padding: 4px 12px;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggleButton:hover {
+  background: #e0e0e0;
+}
+
+.helpText {
+  color: #888;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.productInput {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.productInput label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.productInput .input {
+  padding: 10px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.productInput .input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.productInput .input::placeholder {
+  color: #aaa;
 }

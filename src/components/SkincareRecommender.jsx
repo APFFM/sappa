@@ -114,12 +114,13 @@ export default function SkincareRecommender({ onClose }) {
       const analysis = await analyzeSkinFromImage(uploadedImage);
       setSkinAnalysis(analysis);
 
-      // Step 2: Get personalized routine with budget
+      // Step 2: Get personalized routine with budget and current products
       const routine = await getSkincareRoutine(
         analysis,
         { city, country: normalizeCountryName(country) },
         budget,
-        !useAIAge && manualAge ? parseInt(manualAge) : null
+        !useAIAge && manualAge ? parseInt(manualAge) : null,
+        currentProducts
       );
       setSkincareRoutine(routine);
 
@@ -345,6 +346,93 @@ export default function SkincareRecommender({ onClose }) {
                   );
                 })}
               </div>
+            </div>
+
+            {/* Current Products Section */}
+            <div className={styles.formGroup}>
+              <label>
+                <span>💄 Current Products (Optional)</span>
+                <button
+                  type="button"
+                  className={styles.toggleButton}
+                  onClick={() => setShowCurrentProducts(!showCurrentProducts)}
+                >
+                  {showCurrentProducts ? '▼ Hide' : '▶ Show'}
+                </button>
+              </label>
+              <p className={styles.helpText}>
+                Tell us what you're currently using for better personalized recommendations
+              </p>
+
+              {showCurrentProducts && (
+                <div className={styles.productsGrid}>
+                  <div className={styles.productInput}>
+                    <label>Cleanser</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., CeraVe Foaming Cleanser"
+                      value={currentProducts.cleanser}
+                      onChange={(e) => setCurrentProducts({...currentProducts, cleanser: e.target.value})}
+                      className={styles.input}
+                    />
+                  </div>
+
+                  <div className={styles.productInput}>
+                    <label>Toner/Essence</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Paula's Choice BHA Toner"
+                      value={currentProducts.toner}
+                      onChange={(e) => setCurrentProducts({...currentProducts, toner: e.target.value})}
+                      className={styles.input}
+                    />
+                  </div>
+
+                  <div className={styles.productInput}>
+                    <label>Serum/Treatment</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., The Ordinary Niacinamide"
+                      value={currentProducts.serum}
+                      onChange={(e) => setCurrentProducts({...currentProducts, serum: e.target.value})}
+                      className={styles.input}
+                    />
+                  </div>
+
+                  <div className={styles.productInput}>
+                    <label>Moisturizer</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Neutrogena Hydro Boost"
+                      value={currentProducts.moisturizer}
+                      onChange={(e) => setCurrentProducts({...currentProducts, moisturizer: e.target.value})}
+                      className={styles.input}
+                    />
+                  </div>
+
+                  <div className={styles.productInput}>
+                    <label>Sunscreen</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., La Roche-Posay SPF 50"
+                      value={currentProducts.sunscreen}
+                      onChange={(e) => setCurrentProducts({...currentProducts, sunscreen: e.target.value})}
+                      className={styles.input}
+                    />
+                  </div>
+
+                  <div className={styles.productInput}>
+                    <label>Other Products</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., retinol, vitamin C, masks"
+                      value={currentProducts.other}
+                      onChange={(e) => setCurrentProducts({...currentProducts, other: e.target.value})}
+                      className={styles.input}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className={styles.buttonGroup}>

@@ -114,7 +114,7 @@ Be specific, accurate, and professional. Focus on visible skin characteristics. 
 /**
  * Get personalized 5-step skincare routine with product recommendations
  */
-export async function getSkincareRoutine(skinAnalysis, location, budget = 'middle', manualAge = null) {
+export async function getSkincareRoutine(skinAnalysis, location, budget = 'middle', manualAge = null, currentProducts = null) {
   const apiKey = getGeminiApiKey();
   if (!apiKey) {
     throw new Error('Gemini API key not configured');
@@ -148,7 +148,22 @@ CLIENT PROFILE:
 - Skin Texture: ${skinTexture.smoothness}, ${skinTexture.poreSize} pores, ${skinTexture.hydration}
 - Focus Areas: ${focusAreas}
 - Key Ingredients Needed: ${beneficialIngredients}
+${currentProducts && Object.values(currentProducts).some(p => p.trim()) ? `
+CURRENT PRODUCTS USER IS USING:
+${currentProducts.cleanser ? `- Cleanser: ${currentProducts.cleanser}` : ''}
+${currentProducts.toner ? `- Toner: ${currentProducts.toner}` : ''}
+${currentProducts.serum ? `- Serum: ${currentProducts.serum}` : ''}
+${currentProducts.moisturizer ? `- Moisturizer: ${currentProducts.moisturizer}` : ''}
+${currentProducts.sunscreen ? `- Sunscreen: ${currentProducts.sunscreen}` : ''}
+${currentProducts.other ? `- Other: ${currentProducts.other}` : ''}
 
+IMPORTANT INSTRUCTIONS FOR CURRENT PRODUCTS:
+- If a product they're using is good for their skin type and concerns, you can keep it in the routine
+- If a product is not suitable, explain why and recommend a better alternative
+- Suggest complementary products that work well with what they're already using
+- Identify any product conflicts or ingredients that don't work well together
+- Avoid recommending duplicate products they already have
+` : ''}
 IMPORTANT: Recommend ONLY products that fit within the ${budget.toUpperCase()} budget tier. All products must be available in ${location.country}.
 
 Provide recommendations in this EXACT JSON format with REAL products available internationally and in ${location.country}:

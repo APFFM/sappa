@@ -9,6 +9,7 @@ import ThemeToggle from './components/ThemeToggle';
 import SkinAnalysisDashboard from './components/SkinAnalysisDashboard';
 import ApiKeySettings from './components/ApiKeySettings';
 import MakeupRecommender from './components/MakeupRecommender';
+import SkincareRecommender from './components/SkincareRecommender';
 import styles from './App.module.css';
 import { detectLanguage, getLanguageInstruction, getLanguageName } from './services/languageService';
 
@@ -30,6 +31,7 @@ function App() {
   const [activeDrawer, setActiveDrawer] = useState(null); // 'guide' | 'products' | null
   const [isMobile, setIsMobile] = useState(false);
   const [showMakeupRecommender, setShowMakeupRecommender] = useState(false);
+  const [showSkincareAnalyzer, setShowSkincareAnalyzer] = useState(false);
 
   const MAX_TOKENS_PER_HOUR = 20000;
   const RATE_LIMIT_DURATION = 3600000; // 1 hour in milliseconds
@@ -383,6 +385,13 @@ function App() {
       >
         💄
       </button>
+      <button
+        className={styles.skincareAnalyzerButton}
+        onClick={() => setShowSkincareAnalyzer(true)}
+        title="AI Skincare Analyzer - Get Personalized Routine"
+      >
+        🧴
+      </button>
       <div className={styles.header}>
         <h1 data-text="Beauty Advisor">
           <span className={styles.sparkles}>✨</span>
@@ -504,6 +513,13 @@ function App() {
       {showMakeupRecommender && (
         <MakeupRecommender
           onClose={() => setShowMakeupRecommender(false)}
+        />
+      )}
+
+      {/* Skincare Analyzer Modal */}
+      {showSkincareAnalyzer && (
+        <SkincareRecommender
+          onClose={() => setShowSkincareAnalyzer(false)}
         />
       )}
     </div>

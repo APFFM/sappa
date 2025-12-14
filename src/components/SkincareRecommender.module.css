@@ -1,0 +1,816 @@
+/* ==================== OVERLAY & MODAL ==================== */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  backdrop-filter: blur(8px);
+}
+
+.modal {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 1000px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+  padding: 32px;
+}
+
+.closeButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+/* ==================== HEADER ==================== */
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.header h2 {
+  font-size: 2rem;
+  margin: 0 0 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header p {
+  color: #666;
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.error {
+  background: #fee;
+  border: 1px solid #fcc;
+  color: #c33;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+/* ==================== UPLOAD STEP ==================== */
+.uploadStep {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.uploadInfo h3 {
+  color: #333;
+  margin: 0 0 12px;
+}
+
+.uploadInfo p {
+  color: #666;
+  margin: 0 0 16px;
+}
+
+.tips {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tips li {
+  color: #667eea;
+  font-size: 0.95rem;
+}
+
+.uploadLabel {
+  border: 3px dashed #ddd;
+  border-radius: 16px;
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: #fafafa;
+}
+
+.uploadLabel:hover {
+  border-color: #667eea;
+  background: #f5f7ff;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: #666;
+}
+
+.uploadIcon {
+  font-size: 3rem;
+}
+
+.uploadHint {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.previewContainer {
+  position: relative;
+  text-align: center;
+}
+
+.previewImage {
+  max-width: 100%;
+  max-height: 400px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.changePhotoButton {
+  margin-top: 16px;
+  padding: 10px 24px;
+  background: white;
+  border: 2px solid #667eea;
+  color: #667eea;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.changePhotoButton:hover {
+  background: #667eea;
+  color: white;
+}
+
+.nextButton {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.nextButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+}
+
+/* ==================== INPUT STEP ==================== */
+.inputStep {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.inputStep h3 {
+  color: #333;
+  margin: 0;
+}
+
+.inputStep p {
+  color: #666;
+  margin: 8px 0 0;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formGroup label {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.05rem;
+}
+
+.locationInputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.input {
+  padding: 14px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.ageOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.radioOption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.radioOption:hover {
+  border-color: #667eea;
+  background: #f5f7ff;
+}
+
+.radioOption input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.backButton {
+  flex: 1;
+  padding: 14px;
+  background: white;
+  border: 2px solid #ddd;
+  color: #666;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.backButton:hover {
+  border-color: #999;
+  color: #333;
+}
+
+.analyzeButton {
+  flex: 2;
+  padding: 14px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.analyzeButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+}
+
+.analyzeButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==================== ANALYZING STEP ==================== */
+.analyzingStep {
+  text-align: center;
+  padding: 32px 0;
+}
+
+.analyzeAnimation {
+  position: relative;
+  max-width: 400px;
+  margin: 0 auto 32px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.analyzingImage {
+  width: 100%;
+  border-radius: 16px;
+  display: block;
+}
+
+.scanLine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #667eea, transparent);
+  animation: scan 2s linear infinite;
+}
+
+@keyframes scan {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(400px); }
+}
+
+.analyzingStep h3 {
+  color: #333;
+  margin: 0 0 24px;
+  font-size: 1.5rem;
+}
+
+.analyzingSteps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.analyzeStepItem {
+  padding: 12px 16px;
+  background: #f5f7ff;
+  border-radius: 8px;
+  color: #667eea;
+  font-weight: 500;
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==================== RESULTS STEP ==================== */
+.resultsStep {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.analysisCard {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.analysisCard h3 {
+  margin: 0 0 20px;
+  color: #333;
+}
+
+.analysisGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.analysisItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f5f7ff, #fef5ff);
+  border-radius: 12px;
+}
+
+.analysisLabel {
+  font-size: 0.85rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.analysisValue {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #667eea;
+  text-transform: capitalize;
+}
+
+.personalNote {
+  padding: 16px;
+  background: linear-gradient(135deg, #fff9e6, #ffe6f0);
+  border-radius: 12px;
+  border-left: 4px solid #ffa726;
+}
+
+.personalNote strong {
+  color: #f57c00;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.personalNote p {
+  margin: 0;
+  color: #666;
+  line-height: 1.6;
+}
+
+.concernsSection {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 2px solid #f0f0f0;
+}
+
+.concernsSection strong {
+  display: block;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.concernsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.concernItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.concernName {
+  font-weight: 500;
+  color: #333;
+  text-transform: capitalize;
+}
+
+.severityBadge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.severityBadge.mild {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.severityBadge.moderate {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.severityBadge.severe {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+/* ==================== ROUTINE SUMMARY ==================== */
+.routineSummaryCard {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+}
+
+.routineSummaryCard h3 {
+  margin: 0 0 12px;
+  color: white;
+}
+
+.routineSummaryCard p {
+  margin: 0 0 16px;
+  line-height: 1.6;
+  opacity: 0.95;
+}
+
+.investmentBadge {
+  display: inline-block;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+}
+
+/* ==================== ROUTINE TABS ==================== */
+.routineTabs {
+  display: flex;
+  gap: 8px;
+  background: white;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.tab {
+  flex: 1;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  background: #f5f7ff;
+  color: #667eea;
+}
+
+.activeTab {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white !important;
+}
+
+/* ==================== ROUTINE CONTENT ==================== */
+.routineContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.routineContent h4 {
+  margin: 0;
+  color: #333;
+  font-size: 1.3rem;
+}
+
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.productCard {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+  position: relative;
+  border: 2px solid transparent;
+}
+
+.productCard:hover {
+  border-color: #667eea;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+}
+
+.stepBadge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.productCard h4 {
+  margin: 0 0 16px;
+  color: #667eea;
+  font-size: 1.1rem;
+}
+
+.productHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.productName {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+}
+
+.brandName {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.price {
+  background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+  color: #f57c00;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.productDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.detailSection strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.detailSection p {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.ingredientTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ingredientTag {
+  background: #f5f7ff;
+  color: #667eea;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.shopLinks {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.shopButton {
+  padding: 10px;
+  background: linear-gradient(135deg, #f5f7ff, #fef5ff);
+  color: #667eea;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.shopButton:hover {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* ==================== ADVICE SECTION ==================== */
+.adviceSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.adviceCard {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.adviceCard h4 {
+  margin: 0 0 12px;
+  color: #667eea;
+  font-size: 1.05rem;
+}
+
+.adviceCard p {
+  margin: 0;
+  color: #666;
+  line-height: 1.6;
+}
+
+.adviceCard ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #666;
+}
+
+.adviceCard li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+/* ==================== FINAL ACTIONS ==================== */
+.finalActions {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.startOverButton {
+  padding: 14px 32px;
+  background: white;
+  border: 2px solid #667eea;
+  color: #667eea;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.startOverButton:hover {
+  background: #667eea;
+  color: white;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .modal {
+    padding: 20px;
+    max-height: 95vh;
+  }
+
+  .analysisGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .locationInputs {
+    grid-template-columns: 1fr;
+  }
+
+  .productsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .shopLinks {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .routineTabs {
+    flex-direction: column;
+  }
+
+  .adviceSection {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h2 {
+    font-size: 1.5rem;
+  }
+
+  .analysisGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+  }
+}

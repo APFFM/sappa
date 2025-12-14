@@ -10,6 +10,7 @@ import SkinAnalysisDashboard from './components/SkinAnalysisDashboard';
 import ApiKeySettings from './components/ApiKeySettings';
 import MakeupRecommender from './components/MakeupRecommender';
 import SkincareRecommender from './components/SkincareRecommender';
+import Experience3D from './components/3d/Experience3D';
 import styles from './App.module.css';
 import { detectLanguage, getLanguageInstruction, getLanguageName } from './services/languageService';
 
@@ -32,6 +33,7 @@ function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [showMakeupRecommender, setShowMakeupRecommender] = useState(false);
   const [showSkincareAnalyzer, setShowSkincareAnalyzer] = useState(false);
+  const [show3DExperience, setShow3DExperience] = useState(false);
 
   const MAX_TOKENS_PER_HOUR = 20000;
   const RATE_LIMIT_DURATION = 3600000; // 1 hour in milliseconds
@@ -392,6 +394,13 @@ function App() {
       >
         🧴
       </button>
+      <button
+        className={styles.experienceButton}
+        onClick={() => setShow3DExperience(true)}
+        title="3D Experience - Virtual Try-On & Product Viewer"
+      >
+        ✨
+      </button>
       <div className={styles.header}>
         <h1 data-text="Beauty Advisor">
           <span className={styles.sparkles}>✨</span>
@@ -520,6 +529,13 @@ function App() {
       {showSkincareAnalyzer && (
         <SkincareRecommender
           onClose={() => setShowSkincareAnalyzer(false)}
+        />
+      )}
+
+      {/* 3D Experience Modal */}
+      {show3DExperience && (
+        <Experience3D
+          onClose={() => setShow3DExperience(false)}
         />
       )}
     </div>

@@ -66,28 +66,6 @@ const Experience3D = ({ onClose }) => {
     ]
   };
 
-  const handleApplyMakeup = () => {
-    // Apply sample makeup for demo
-    const demoMakeup = {
-      lipstick: {
-        product: 'Ruby Woo Lipstick',
-        brand: 'MAC',
-        category: 'lipstick',
-        finish: 'matte'
-      },
-      eyeshadow: {
-        product: 'Naked3 Palette',
-        brand: 'Urban Decay',
-        category: 'eyeshadow'
-      },
-      blush: {
-        product: 'Orgasm Blush',
-        brand: 'NARS',
-        category: 'blush'
-      }
-    };
-    setMakeupProducts(demoMakeup);
-  };
 
   return (
     <div className={styles.overlay}>
@@ -120,35 +98,40 @@ const Experience3D = ({ onClose }) => {
           {activeTab === 'tryon' && (
             <div className={styles.tryonSection}>
               <div className={styles.infoCard}>
-                <h3>🎭 Real-Time 3D Virtual Try-On</h3>
+                <h3>🎭 3D Virtual Try-On with Product Selection</h3>
                 <p>
-                  Experience cutting-edge face tracking technology powered by MediaPipe and Three.js.
-                  See makeup products rendered in real-time 3D with realistic materials and lighting.
+                  Select from 20+ real makeup products and see them applied to your face using AI.
+                  Then rotate your 3D face model in Three.js to inspect from every angle!
                 </p>
                 <div className={styles.features}>
                   <div className={styles.feature}>
-                    <span className={styles.featureIcon}>📸</span>
-                    <span>468 Facial Landmarks</span>
+                    <span className={styles.featureIcon}>💄</span>
+                    <span>20+ Real Products</span>
                   </div>
                   <div className={styles.feature}>
-                    <span className={styles.featureIcon}>✨</span>
-                    <span>PBR Materials</span>
+                    <span className={styles.featureIcon}>🤖</span>
+                    <span>AI-Powered Application</span>
                   </div>
                   <div className={styles.feature}>
-                    <span className={styles.featureIcon}>🎨</span>
-                    <span>Real-time 3D Overlay</span>
+                    <span className={styles.featureIcon}>🔄</span>
+                    <span>Rotatable 3D View</span>
                   </div>
                 </div>
-                <button className={styles.demoButton} onClick={handleApplyMakeup}>
-                  Apply Demo Makeup
-                </button>
+                <div className={styles.instructions}>
+                  <strong>How to use:</strong>
+                  <ol>
+                    <li>📸 Capture your photo</li>
+                    <li>💄 Select products to try</li>
+                    <li>✨ Click "Apply Makeup"</li>
+                    <li>🔄 Drag to rotate in 3D!</li>
+                  </ol>
+                </div>
               </div>
 
               <VirtualTryOn3D
                 makeupProducts={makeupProducts}
                 onCapture={(screenshot) => {
                   console.log('Captured screenshot:', screenshot);
-                  // Could save to state or download
                 }}
               />
             </div>

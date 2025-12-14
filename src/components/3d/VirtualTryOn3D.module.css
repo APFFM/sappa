@@ -292,32 +292,172 @@
   box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
 }
 
-/* ==================== INSTRUCTIONS ==================== */
+/* ==================== PRODUCT SELECTION ==================== */
 
-.instructions {
+.productSelection {
+  margin-top: 24px;
+  padding: 20px;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 16px;
-  padding: 24px;
   color: white;
+  max-height: 600px;
+  overflow-y: auto;
 }
 
-.instructions h4 {
-  margin: 0 0 16px 0;
-  font-size: 1.2rem;
+.productSelection h4 {
+  margin: 0 0 20px 0;
+  font-size: 1.3rem;
   font-weight: 700;
+  text-align: center;
 }
 
-.instructions ol {
-  margin: 0;
-  padding-left: 24px;
-  line-height: 1.8;
+.productCategory {
+  margin-bottom: 24px;
 }
 
-.instructions li {
-  margin-bottom: 8px;
+.productCategory h5 {
+  margin: 0 0 12px 0;
   font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.9;
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.productButton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: left;
+}
+
+.productButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  border-color: rgba(167, 139, 250, 0.5);
+}
+
+.productButton.selected {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+  border-color: #a78bfa;
+  box-shadow: 0 4px 16px rgba(167, 139, 250, 0.4);
+}
+
+.colorSwatch {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.productInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.productInfo strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.productInfo span {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.applyButton {
+  width: 100%;
+  margin-top: 20px;
+  padding: 16px 32px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+}
+
+.applyButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.6);
+}
+
+.applyButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #666;
+}
+
+/* ==================== 3D VIEWER ==================== */
+
+.viewer3D {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #1a1a2e;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  cursor: grab;
+}
+
+.viewer3D:active {
+  cursor: grabbing;
+}
+
+.viewerControls {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.viewerHint {
+  margin: 0;
+  color: white;
+  font-size: 0.95rem;
+  opacity: 0.8;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px 16px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.appliedProducts {
+  margin: 0 0 16px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.appliedProducts li {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border-left: 3px solid #a78bfa;
 }
 
 /* ==================== RESPONSIVE ==================== */
@@ -350,7 +490,8 @@
   .captureButton,
   .resetButton,
   .tryOnButton,
-  .downloadButton {
+  .downloadButton,
+  .applyButton {
     padding: 12px 20px;
     font-size: 0.9rem;
   }
@@ -363,15 +504,29 @@
     font-size: 1rem;
   }
 
-  .instructions {
-    padding: 16px;
+  .productSelection {
+    max-height: 400px;
   }
 
-  .instructions h4 {
-    font-size: 1rem;
+  .productSelection h4 {
+    font-size: 1.1rem;
   }
 
-  .instructions li {
+  .productGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .viewer3D {
+    aspect-ratio: 3 / 4;
+  }
+
+  .viewerHint {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+  }
+
+  .appliedProducts li {
     font-size: 0.9rem;
+    padding: 8px;
   }
 }

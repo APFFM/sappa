@@ -1017,3 +1017,205 @@
     font-size: 0.7rem;
   }
 }
+
+/* ==================== BUDGET SELECTION ==================== */
+.sectionHint {
+  color: #888;
+  font-size: 0.9rem;
+  margin: -8px 0 12px;
+}
+
+.budgetOptions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.budgetCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+  gap: 8px;
+}
+
+.budgetCard:hover {
+  border-color: #f48fb1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(244, 143, 177, 0.2);
+}
+
+.selectedBudget {
+  border-color: #e91e63;
+  background: linear-gradient(135deg, #fce4ec, #fff5f8);
+  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.2);
+}
+
+.budgetEmoji {
+  font-size: 1.8rem;
+}
+
+.budgetName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+.budgetRange {
+  font-size: 0.75rem;
+  color: #888;
+  text-align: center;
+}
+
+/* ==================== VIRTUAL TRY-ON ==================== */
+.tryOnActions {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 2px dashed #e0e0e0;
+}
+
+.tryOnButton {
+  width: 100%;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tryOnButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+}
+
+.tryOnButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tryOnResults {
+  margin-top: 24px;
+  padding: 24px;
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border-radius: 16px;
+}
+
+.tryOnResults h4 {
+  margin: 0 0 12px;
+  color: #059669;
+  text-align: center;
+}
+
+.tryOnDescription {
+  color: #666;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.tryOnComparison {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.tryOnImageContainer {
+  text-align: center;
+}
+
+.tryOnLabel {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+
+.tryOnImage {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tryOnArrow {
+  font-size: 2rem;
+  color: #10b981;
+  font-weight: bold;
+}
+
+.expectedChanges {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: left;
+}
+
+.expectedChanges h5 {
+  margin: 0 0 12px;
+  color: #333;
+  font-size: 1rem;
+}
+
+.expectedChanges ul {
+  margin: 0;
+  padding-left: 24px;
+  color: #666;
+}
+
+.expectedChanges li {
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* ==================== RESPONSIVE ADDITIONS ==================== */
+@media (max-width: 768px) {
+  .budgetOptions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tryOnComparison {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .tryOnArrow {
+    transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 480px) {
+  .budgetCard {
+    padding: 12px 8px;
+  }
+
+  .budgetEmoji {
+    font-size: 1.5rem;
+  }
+
+  .budgetName {
+    font-size: 0.8rem;
+  }
+
+  .budgetRange {
+    font-size: 0.7rem;
+  }
+}

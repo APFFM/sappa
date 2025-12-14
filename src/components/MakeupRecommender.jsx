@@ -10,6 +10,8 @@ import {
   getUltaSearchUrl,
   getGoogleMapsUrl
 } from '../services/makeupShoppingService';
+import { getCountryShoppingLinks, getBudgetTierInfo, normalizeCountryName } from '../services/countryShoppingService';
+import { generateMakeupProductResults } from '../services/virtualTryOnService';
 
 // Occasion options with descriptions
 const OCCASIONS = [
@@ -78,8 +80,14 @@ export default function MakeupRecommender({ onClose, userImage }) {
   const [loadingAppointments, setLoadingAppointments] = useState(false);
   const [city, setCity] = useState('');
   const [country, setCountry] = useState('');
+  const [budget, setBudget] = useState('middle');
   const [showShoppingSection, setShowShoppingSection] = useState(false);
   const [showAppointmentSection, setShowAppointmentSection] = useState(false);
+
+  // Virtual try-on states
+  const [showTryOn, setShowTryOn] = useState(false);
+  const [tryOnResult, setTryOnResult] = useState(null);
+  const [loadingTryOn, setLoadingTryOn] = useState(false);
 
   // Handle image upload
   const handleImageUpload = (e) => {
@@ -209,7 +217,9 @@ export default function MakeupRecommender({ onClose, userImage }) {
         makeupType: MAKEUP_TYPES.find(m => m.id === selectedMakeupType)?.name,
         skinTone: SKIN_TONES.find(s => s.id === selectedSkinTone)?.name,
         intensity,
-        imageAnalysis: recommendations ? 'Based on AI-generated makeup look' : null
+        imageAnalysis: recommendations ? 'Based on AI-generated makeup look' : null,
+        budget,
+        country: normalizeCountryName(country || 'International')
       };
 
       const productRecs = await getProductRecommendations(lookDetails);
@@ -242,6 +252,39 @@ export default function MakeupRecommender({ onClose, userImage }) {
       setError(`Failed to find artists: ${err.message}`);
     } finally {
       setLoadingAppointments(false);
+    }
+  };
+
+  // Virtual try-on handler
+  const handleVirtualTryOn = async () => {
+    if (!uploadedImage || !products) {
+      setError('Please upload a photo and get product recommendations first');
+      return;
+    }
+
+    setLoadingTryOn(true);
+    setError(null);
+    try {
+      const makeupLook = {
+        occasion: OCCASIONS.find(o => o.id === selectedOccasion)?.name,
+        personality: PERSONALITIES.find(p => p.id === selectedPersonality)?.name,
+        makeupType: MAKEUP_TYPES.find(m => m.id === selectedMakeupType)?.name,
+        intensity
+      };
+
+      const result = await generateMakeupProductResults(
+        uploadedImage,
+        products,
+        makeupLook
+      );
+
+      setTryOnResult(result);
+      setShowTryOn(true);
+    } catch (err) {
+      console.error('Virtual try-on error:', err);
+      setError(`Failed to generate try-on: ${err.message}`);
+    } finally {
+      setLoadingTryOn(false);
     }
   };
 
@@ -414,6 +457,28 @@ export default function MakeupRecommender({ onClose, userImage }) {
                   onChange={(e) => setCustomNotes(e.target.value)}
                   rows={3}
                 />
+              </div>
+
+              {/* Budget Selection */}
+              <div className={styles.section}>
+                <h3>💰 Budget Tier</h3>
+                <p className={styles.sectionHint}>Select your preferred product price range</p>
+                <div className={styles.budgetOptions}>
+                  {['budget', 'middle', 'high', 'luxury'].map((tier) => {
+                    const info = getBudgetTierInfo(tier);
+                    return (
+                      <button
+                        key={tier}
+                        className={`${styles.budgetCard} ${budget === tier ? styles.selectedBudget : ''}`}
+                        onClick={() => setBudget(tier)}
+                      >
+                        <span className={styles.budgetEmoji}>{info.label.split(' ')[0]}</span>
+                        <span className={styles.budgetName}>{info.label.substring(2)}</span>
+                        <span className={styles.budgetRange}>{info.range}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               <button
@@ -594,47 +659,90 @@ export default function MakeupRecommender({ onClose, userImage }) {
                       <strong>Total Estimate:</strong> {products.totalEstimate}
                     </div>
                     <div className={styles.productsList}>
-                      {Object.entries(products).filter(([key]) => key !== 'totalEstimate').map(([category, product]) => (
-                        <div key={category} className={styles.productItem}>
-                          <div className={styles.productInfo}>
-                            <strong>{category.charAt(0).toUpperCase() + category.slice(1)}</strong>
-                            <div className={styles.productDetails}>
-                              <span className={styles.brand}>{product.brand}</span>
-                              <span className={styles.productName}>{product.product}</span>
-                              {product.shade && <span className={styles.shade}>Shade: {product.shade}</span>}
-                              {product.colors && <span className={styles.colors}>Colors: {product.colors.join(', ')}</span>}
-                              <span className={styles.price}>{product.price}</span>
+                      {Object.entries(products).filter(([key]) => key !== 'totalEstimate').map(([category, product]) => {
+                        const normalizedCountry = normalizeCountryName(country || 'International');
+                        const shoppingLinks = getCountryShoppingLinks(normalizedCountry, budget, product.searchQuery);
+
+                        return (
+                          <div key={category} className={styles.productItem}>
+                            <div className={styles.productInfo}>
+                              <strong>{category.charAt(0).toUpperCase() + category.slice(1)}</strong>
+                              <div className={styles.productDetails}>
+                                <span className={styles.brand}>{product.brand}</span>
+                                <span className={styles.productName}>{product.product}</span>
+                                {product.shade && <span className={styles.shade}>Shade: {product.shade}</span>}
+                                {product.colors && <span className={styles.colors}>Colors: {product.colors.join(', ')}</span>}
+                                <span className={styles.price}>{product.price}</span>
+                              </div>
+                            </div>
+                            <div className={styles.productLinks}>
+                              {shoppingLinks.map((link, idx) => (
+                                <a
+                                  key={idx}
+                                  href={link.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={styles.shopLink}
+                                >
+                                  {link.name}
+                                </a>
+                              ))}
                             </div>
                           </div>
-                          <div className={styles.productLinks}>
-                            <a
-                              href={getAmazonSearchUrl(product.searchQuery)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={styles.shopLink}
-                            >
-                              Amazon
-                            </a>
-                            <a
-                              href={getSephoraSearchUrl(product.searchQuery)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={styles.shopLink}
-                            >
-                              Sephora
-                            </a>
-                            <a
-                              href={getUltaSearchUrl(product.searchQuery)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={styles.shopLink}
-                            >
-                              Ulta
-                            </a>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
+
+                    {/* Virtual Try-On Button */}
+                    <div className={styles.tryOnActions}>
+                      <button
+                        className={styles.tryOnButton}
+                        onClick={handleVirtualTryOn}
+                        disabled={loadingTryOn}
+                      >
+                        {loadingTryOn ? (
+                          <>
+                            <span className={styles.spinner}></span>
+                            Generating Preview...
+                          </>
+                        ) : (
+                          <>✨ Virtual Try-On: See Product Results</>
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Virtual Try-On Results */}
+                    {showTryOn && tryOnResult && (
+                      <div className={styles.tryOnResults}>
+                        <h4>🎨 Product Visualization</h4>
+                        <p className={styles.tryOnDescription}>{tryOnResult.description}</p>
+
+                        {tryOnResult.imageUrl && (
+                          <div className={styles.tryOnComparison}>
+                            <div className={styles.tryOnImageContainer}>
+                              <span className={styles.tryOnLabel}>Before</span>
+                              <img src={uploadedImage} alt="Before" className={styles.tryOnImage} />
+                            </div>
+                            <div className={styles.tryOnArrow}>→</div>
+                            <div className={styles.tryOnImageContainer}>
+                              <span className={styles.tryOnLabel}>Expected Results</span>
+                              <img src={tryOnResult.imageUrl} alt="With Products" className={styles.tryOnImage} />
+                            </div>
+                          </div>
+                        )}
+
+                        {tryOnResult.expectedChanges && tryOnResult.expectedChanges.length > 0 && (
+                          <div className={styles.expectedChanges}>
+                            <h5>Expected Improvements:</h5>
+                            <ul>
+                              {tryOnResult.expectedChanges.map((change, idx) => (
+                                <li key={idx}>{change}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

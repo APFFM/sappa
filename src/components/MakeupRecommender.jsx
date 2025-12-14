@@ -2,6 +2,14 @@ import { useState } from 'react';
 import styles from './MakeupRecommender.module.css';
 import { generateMakeupImage, isGeminiImageAvailable } from '../services/geminiImageService';
 import { detectLanguage, getLanguageInstruction } from '../services/languageService';
+import {
+  getProductRecommendations,
+  searchMakeupArtists,
+  getAmazonSearchUrl,
+  getSephoraSearchUrl,
+  getUltaSearchUrl,
+  getGoogleMapsUrl
+} from '../services/makeupShoppingService';
 
 // Occasion options with descriptions
 const OCCASIONS = [
@@ -62,6 +70,16 @@ export default function MakeupRecommender({ onClose, userImage }) {
   const [error, setError] = useState(null);
   const [uploadedImage, setUploadedImage] = useState(userImage || null);
   const [step, setStep] = useState(1); // 1: preferences, 2: upload, 3: result
+
+  // Shopping and appointment states
+  const [products, setProducts] = useState(null);
+  const [loadingProducts, setLoadingProducts] = useState(false);
+  const [appointments, setAppointments] = useState(null);
+  const [loadingAppointments, setLoadingAppointments] = useState(false);
+  const [city, setCity] = useState('');
+  const [country, setCountry] = useState('');
+  const [showShoppingSection, setShowShoppingSection] = useState(false);
+  const [showAppointmentSection, setShowAppointmentSection] = useState(false);
 
   // Handle image upload
   const handleImageUpload = (e) => {
@@ -178,6 +196,53 @@ export default function MakeupRecommender({ onClose, userImage }) {
     if (occasion?.id === 'party') tips.push('Add extra highlight for glow');
     tips.push('Set with setting spray for all-day wear');
     return tips;
+  };
+
+  // Fetch product recommendations from Gemini API
+  const handleGetProducts = async () => {
+    setLoadingProducts(true);
+    setError(null);
+    try {
+      const lookDetails = {
+        occasion: OCCASIONS.find(o => o.id === selectedOccasion)?.name,
+        personality: PERSONALITIES.find(p => p.id === selectedPersonality)?.name,
+        makeupType: MAKEUP_TYPES.find(m => m.id === selectedMakeupType)?.name,
+        skinTone: SKIN_TONES.find(s => s.id === selectedSkinTone)?.name,
+        intensity,
+        imageAnalysis: recommendations ? 'Based on AI-generated makeup look' : null
+      };
+
+      const productRecs = await getProductRecommendations(lookDetails);
+      setProducts(productRecs);
+      setShowShoppingSection(true);
+    } catch (err) {
+      console.error('Product recommendation error:', err);
+      setError(`Failed to get products: ${err.message}`);
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
+
+  // Search for makeup artists
+  const handleSearchArtists = async () => {
+    if (!city.trim() || !country.trim()) {
+      setError('Please enter both city and country');
+      return;
+    }
+
+    setLoadingAppointments(true);
+    setError(null);
+    try {
+      const lookType = PERSONALITIES.find(p => p.id === selectedPersonality)?.name || 'professional makeup';
+      const artistResults = await searchMakeupArtists(city, country, lookType);
+      setAppointments(artistResults);
+      setShowAppointmentSection(true);
+    } catch (err) {
+      console.error('Appointment search error:', err);
+      setError(`Failed to find artists: ${err.message}`);
+    } finally {
+      setLoadingAppointments(false);
+    }
   };
 
   // Generate the actual makeup image
@@ -503,6 +568,198 @@ export default function MakeupRecommender({ onClose, userImage }) {
                   )}
                 </div>
               )}
+
+              {/* Shopping Section */}
+              <div className={styles.shoppingCard}>
+                <h4>🛍️ Shop the Look</h4>
+                <p>Get specific product recommendations based on your AI-generated makeup look</p>
+                {!showShoppingSection ? (
+                  <button
+                    className={styles.actionButton}
+                    onClick={handleGetProducts}
+                    disabled={loadingProducts}
+                  >
+                    {loadingProducts ? (
+                      <>
+                        <span className={styles.spinner}></span>
+                        Finding Products...
+                      </>
+                    ) : (
+                      <>🛒 Get Product Recommendations</>
+                    )}
+                  </button>
+                ) : products && (
+                  <div className={styles.productsSection}>
+                    <div className={styles.totalEstimate}>
+                      <strong>Total Estimate:</strong> {products.totalEstimate}
+                    </div>
+                    <div className={styles.productsList}>
+                      {Object.entries(products).filter(([key]) => key !== 'totalEstimate').map(([category, product]) => (
+                        <div key={category} className={styles.productItem}>
+                          <div className={styles.productInfo}>
+                            <strong>{category.charAt(0).toUpperCase() + category.slice(1)}</strong>
+                            <div className={styles.productDetails}>
+                              <span className={styles.brand}>{product.brand}</span>
+                              <span className={styles.productName}>{product.product}</span>
+                              {product.shade && <span className={styles.shade}>Shade: {product.shade}</span>}
+                              {product.colors && <span className={styles.colors}>Colors: {product.colors.join(', ')}</span>}
+                              <span className={styles.price}>{product.price}</span>
+                            </div>
+                          </div>
+                          <div className={styles.productLinks}>
+                            <a
+                              href={getAmazonSearchUrl(product.searchQuery)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={styles.shopLink}
+                            >
+                              Amazon
+                            </a>
+                            <a
+                              href={getSephoraSearchUrl(product.searchQuery)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={styles.shopLink}
+                            >
+                              Sephora
+                            </a>
+                            <a
+                              href={getUltaSearchUrl(product.searchQuery)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={styles.shopLink}
+                            >
+                              Ulta
+                            </a>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Appointment Booking Section */}
+              <div className={styles.appointmentCard}>
+                <h4>📅 Book a Makeup Appointment</h4>
+                <p>Find makeup artists in your area to recreate this look professionally</p>
+
+                {!showAppointmentSection ? (
+                  <div className={styles.locationForm}>
+                    <div className={styles.inputRow}>
+                      <input
+                        type="text"
+                        placeholder="City"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        className={styles.locationInput}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Country"
+                        value={country}
+                        onChange={(e) => setCountry(e.target.value)}
+                        className={styles.locationInput}
+                      />
+                    </div>
+                    <button
+                      className={styles.actionButton}
+                      onClick={handleSearchArtists}
+                      disabled={loadingAppointments || !city.trim() || !country.trim()}
+                    >
+                      {loadingAppointments ? (
+                        <>
+                          <span className={styles.spinner}></span>
+                          Searching Artists...
+                        </>
+                      ) : (
+                        <>📍 Find Makeup Artists</>
+                      )}
+                    </button>
+                  </div>
+                ) : appointments && (
+                  <div className={styles.artistsSection}>
+                    <div className={styles.locationHeader}>
+                      <strong>📍 {appointments.location}</strong>
+                      <button
+                        className={styles.changeLocationBtn}
+                        onClick={() => setShowAppointmentSection(false)}
+                      >
+                        Change Location
+                      </button>
+                    </div>
+
+                    {/* Average Prices */}
+                    {appointments.averagePrices && (
+                      <div className={styles.priceInfo}>
+                        <h5>💰 Average Prices in {city}:</h5>
+                        <div className={styles.priceGrid}>
+                          {Object.entries(appointments.averagePrices).map(([service, price]) => (
+                            <div key={service} className={styles.priceItem}>
+                              <span className={styles.serviceName}>
+                                {service.replace(/([A-Z])/g, ' $1').trim()}:
+                              </span>
+                              <span className={styles.servicePrice}>{price}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Artists List */}
+                    <div className={styles.artistsList}>
+                      {appointments.artists?.map((artist, idx) => (
+                        <div key={idx} className={styles.artistItem}>
+                          <div className={styles.artistHeader}>
+                            <h5>{artist.name}</h5>
+                            <span className={styles.artistType}>{artist.type}</span>
+                          </div>
+                          <div className={styles.artistDetails}>
+                            <div className={styles.artistRating}>⭐ {artist.rating}</div>
+                            <div className={styles.artistPrice}>{artist.priceRange}</div>
+                          </div>
+                          <div className={styles.artistSpecialty}>
+                            <strong>Specialty:</strong> {artist.specialty}
+                          </div>
+                          <div className={styles.artistServices}>
+                            <strong>Services:</strong>
+                            <div className={styles.servicesTags}>
+                              {artist.services?.map((service, i) => (
+                                <span key={i} className={styles.serviceTag}>{service}</span>
+                              ))}
+                            </div>
+                          </div>
+                          <div className={styles.artistBooking}>
+                            <div className={styles.bookingTip}>
+                              <strong>💡 Booking Tip:</strong> {artist.bookingTip}
+                            </div>
+                            <a
+                              href={getGoogleMapsUrl(artist.searchQuery, city, country)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={styles.findButton}
+                            >
+                              📍 Find on Maps
+                            </a>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Search Tips */}
+                    {appointments.searchTips && appointments.searchTips.length > 0 && (
+                      <div className={styles.searchTips}>
+                        <h5>💡 Search Tips:</h5>
+                        <ul>
+                          {appointments.searchTips.map((tip, i) => (
+                            <li key={i}>{tip}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
 
               <div className={styles.buttonGroup}>
                 <button className={styles.backButton} onClick={() => setStep(1)}>

@@ -1,279 +1,263 @@
 /**
  * 3D Virtual Try-On Component
- * Real-time face tracking with 3D makeup overlay
+ * Camera capture + AI-powered virtual try-on
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import faceTrackingService from '../../services/threejs/faceTrackingService';
-import SceneManager from '../../services/threejs/sceneManager';
+import { generateMakeupProductResults } from '../../services/virtualTryOnService';
 import styles from './VirtualTryOn3D.module.css';
 
 const VirtualTryOn3D = ({ makeupProducts, onCapture }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-  const overlayCanvasRef = useRef(null);
-  const [isTracking, setIsTracking] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState(null);
-  const [sceneManager, setSceneManager] = useState(null);
-  const [makeupOverlays, setMakeupOverlays] = useState({});
+  const [capturedImage, setCapturedImage] = useState(null);
+  const [tryOnResult, setTryOnResult] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-    let mounted = true;
+    let stream = null;
 
-    const initializeTracking = async () => {
+    const startCamera = async () => {
       try {
-        // Initialize scene manager
-        const sm = new SceneManager();
-        sm.initialize(overlayCanvasRef.current, 1280, 720);
-        sm.startRendering();
-        setSceneManager(sm);
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+            facingMode: 'user'
+          },
+          audio: false
+        });
 
-        // Initialize face tracking
-        await faceTrackingService.initialize(
-          videoRef.current,
-          canvasRef.current,
-          (results) => {
-            if (mounted && results.landmarks) {
-              updateMakeupOverlays(results.landmarks, sm);
-            }
-          }
-        );
-
-        if (mounted) {
-          setIsTracking(true);
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.onloadedmetadata = () => {
+            videoRef.current.play();
+            setIsStreaming(true);
+          };
         }
       } catch (err) {
-        console.error('Failed to initialize tracking:', err);
-        if (mounted) {
-          setError('Failed to access camera or initialize tracking');
-        }
+        console.error('Failed to access camera:', err);
+        setError('Failed to access camera. Please allow camera permissions.');
       }
     };
 
-    initializeTracking();
+    startCamera();
 
     return () => {
-      mounted = false;
-      faceTrackingService.stop();
-      if (sceneManager) {
-        sceneManager.dispose();
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
       }
     };
   }, []);
 
-  useEffect(() => {
-    if (isTracking && sceneManager && makeupProducts) {
-      applyMakeupProducts();
-    }
-  }, [makeupProducts, isTracking, sceneManager]);
+  const capturePhoto = () => {
+    if (!videoRef.current || !canvasRef.current) return null;
 
-  const updateMakeupOverlays = (landmarks, sm) => {
-    // Get facial feature landmarks
-    const features = faceTrackingService.getFeatureLandmarks('all');
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
 
-    // Extract landmarks for each feature
-    const lipLandmarks = {
-      upper: features.lips.upper.map(idx => landmarks[idx]),
-      lower: features.lips.lower.map(idx => landmarks[idx]),
-      inner: features.lips.inner.map(idx => landmarks[idx])
-    };
+    // Set canvas size to match video
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
 
-    const leftEyeLandmarks = features.leftEye.map(idx => landmarks[idx]);
-    const rightEyeLandmarks = features.rightEye.map(idx => landmarks[idx]);
-    const leftCheekLandmarks = features.leftCheek.map(idx => landmarks[idx]);
-    const rightCheekLandmarks = features.rightCheek.map(idx => landmarks[idx]);
+    // Draw video frame to canvas
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Update makeup overlays (this will be called every frame)
-    // We only create new overlays when products change
-  };
-
-  const applyMakeupProducts = () => {
-    if (!sceneManager) return;
-
-    // Clear existing makeup
-    sceneManager.clearMakeup();
-
-    const newOverlays = {};
-
-    // Apply lipstick
-    if (makeupProducts.lipstick) {
-      const color = parseColorFromProduct(makeupProducts.lipstick);
-      const features = faceTrackingService.getFeatureLandmarks('all');
-
-      if (features && faceTrackingService.landmarks) {
-        const lipLandmarks = {
-          upper: features.lips.upper.map(idx => faceTrackingService.landmarks[idx]),
-          lower: features.lips.lower.map(idx => faceTrackingService.landmarks[idx])
-        };
-
-        const lipstickOverlay = sceneManager.createLipstickOverlay(
-          lipLandmarks,
-          color,
-          makeupProducts.lipstick.finish || 'glossy'
-        );
-
-        sceneManager.addToScene(lipstickOverlay);
-        newOverlays.lipstick = lipstickOverlay;
-      }
-    }
-
-    // Apply eyeshadow
-    if (makeupProducts.eyeshadow) {
-      const colors = parseEyeshadowColors(makeupProducts.eyeshadow);
-      const features = faceTrackingService.getFeatureLandmarks('all');
-
-      if (features && faceTrackingService.landmarks) {
-        // Left eye
-        const leftEyeLandmarks = features.leftEye.map(idx => faceTrackingService.landmarks[idx]);
-        const leftEyeshadow = sceneManager.createEyeshadowOverlay(leftEyeLandmarks, colors);
-        sceneManager.addToScene(leftEyeshadow);
-
-        // Right eye
-        const rightEyeLandmarks = features.rightEye.map(idx => faceTrackingService.landmarks[idx]);
-        const rightEyeshadow = sceneManager.createEyeshadowOverlay(rightEyeLandmarks, colors);
-        sceneManager.addToScene(rightEyeshadow);
-
-        newOverlays.eyeshadow = [leftEyeshadow, rightEyeshadow];
-      }
-    }
-
-    // Apply blush
-    if (makeupProducts.blush) {
-      const color = parseColorFromProduct(makeupProducts.blush);
-      const features = faceTrackingService.getFeatureLandmarks('all');
-
-      if (features && faceTrackingService.landmarks) {
-        // Left cheek
-        const leftCheekLandmarks = features.leftCheek.map(idx => faceTrackingService.landmarks[idx]);
-        const leftBlush = sceneManager.createBlushOverlay(leftCheekLandmarks, color, 0.4);
-        sceneManager.addToScene(leftBlush);
-
-        // Right cheek
-        const rightCheekLandmarks = features.rightCheek.map(idx => faceTrackingService.landmarks[idx]);
-        const rightBlush = sceneManager.createBlushOverlay(rightCheekLandmarks, color, 0.4);
-        sceneManager.addToScene(rightBlush);
-
-        newOverlays.blush = [leftBlush, rightBlush];
-      }
-    }
-
-    setMakeupOverlays(newOverlays);
-  };
-
-  const parseColorFromProduct = (product) => {
-    // Parse color from product name or use default
-    const colorKeywords = {
-      red: 0xff0000,
-      pink: 0xff69b4,
-      nude: 0xd4a59a,
-      coral: 0xff7f50,
-      berry: 0x8b0040,
-      mauve: 0xe0b0ff,
-      rose: 0xff007f,
-      peach: 0xffcba4,
-      brown: 0x8b4513
-    };
-
-    const productName = product.product?.toLowerCase() || '';
-
-    for (const [keyword, color] of Object.entries(colorKeywords)) {
-      if (productName.includes(keyword)) {
-        return color;
-      }
-    }
-
-    // Default colors by product type
-    if (product.category === 'lipstick') return 0xff69b4; // Pink
-    if (product.category === 'blush') return 0xff7f7f; // Light red
-
-    return 0xff69b4; // Default pink
-  };
-
-  const parseEyeshadowColors = (product) => {
-    const productName = product.product?.toLowerCase() || '';
-
-    // Check for palette descriptions
-    if (productName.includes('neutral') || productName.includes('nude')) {
-      return [0xd4a59a, 0xc19a6b, 0x8b7355];
-    } else if (productName.includes('warm') || productName.includes('bronze')) {
-      return [0xd4a373, 0xcd853f, 0x8b4513];
-    } else if (productName.includes('cool') || productName.includes('silver')) {
-      return [0xc0c0c0, 0x808080, 0x404040];
-    } else if (productName.includes('smokey')) {
-      return [0x696969, 0x404040, 0x1a1a1a];
-    }
-
-    // Default brown tones
-    return [0xd2691e, 0x8b4513, 0x654321];
+    // Convert to data URL
+    const imageData = canvas.toDataURL('image/jpeg', 0.95);
+    return imageData;
   };
 
   const handleCapture = () => {
-    if (sceneManager) {
-      const screenshot = sceneManager.takeScreenshot();
+    const photo = capturePhoto();
+    if (photo) {
+      setCapturedImage(photo);
+      setTryOnResult(null);
+
       if (onCapture) {
-        onCapture(screenshot);
+        onCapture(photo);
       }
     }
+  };
+
+  const handleTryOn = async () => {
+    if (!capturedImage || !makeupProducts) {
+      setError('Please capture a photo and apply makeup first');
+      return;
+    }
+
+    setIsProcessing(true);
+    setError(null);
+
+    try {
+      // Create a mock makeup look object from products
+      const makeupLook = {
+        occasion: 'everyday',
+        personality: 'natural'
+      };
+
+      const result = await generateMakeupProductResults(
+        capturedImage,
+        makeupProducts,
+        makeupLook
+      );
+
+      setTryOnResult(result);
+    } catch (err) {
+      console.error('Virtual try-on failed:', err);
+      setError(err.message || 'Failed to generate virtual try-on. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleReset = () => {
+    setCapturedImage(null);
+    setTryOnResult(null);
+    setError(null);
   };
 
   return (
     <div className={styles.container}>
-      <div className={styles.videoContainer}>
-        <video
-          ref={videoRef}
-          className={styles.video}
-          autoPlay
-          playsInline
-          muted
-        />
-        <canvas
-          ref={canvasRef}
-          className={styles.canvas}
-          width={1280}
-          height={720}
-        />
-        <canvas
-          ref={overlayCanvasRef}
-          className={styles.overlayCanvas}
-          width={1280}
-          height={720}
-        />
+      <div className={styles.mainContent}>
+        {/* Left Side - Camera/Capture */}
+        <div className={styles.cameraSection}>
+          <h3>📸 Camera</h3>
+          <div className={styles.videoContainer}>
+            <video
+              ref={videoRef}
+              className={styles.video}
+              autoPlay
+              playsInline
+              muted
+              style={{ display: capturedImage ? 'none' : 'block' }}
+            />
+            <canvas
+              ref={canvasRef}
+              className={styles.canvas}
+              style={{ display: 'none' }}
+            />
 
-        {!isTracking && !error && (
-          <div className={styles.loading}>
-            <div className={styles.spinner}></div>
-            <p>Initializing face tracking...</p>
+            {capturedImage && !tryOnResult && (
+              <img
+                src={capturedImage}
+                alt="Captured"
+                className={styles.capturedImage}
+              />
+            )}
+
+            {!isStreaming && !error && (
+              <div className={styles.loading}>
+                <div className={styles.spinner}></div>
+                <p>Starting camera...</p>
+              </div>
+            )}
+
+            {error && (
+              <div className={styles.errorOverlay}>
+                <p>⚠️ {error}</p>
+              </div>
+            )}
           </div>
-        )}
 
-        {error && (
-          <div className={styles.error}>
-            <p>{error}</p>
-          </div>
-        )}
-
-        {isTracking && (
           <div className={styles.controls}>
-            <button onClick={handleCapture} className={styles.captureButton}>
-              📸 Capture
-            </button>
-            <button
-              onClick={() => sceneManager?.clearMakeup()}
-              className={styles.clearButton}
-            >
-              Clear Makeup
-            </button>
+            {!capturedImage ? (
+              <button
+                onClick={handleCapture}
+                className={styles.captureButton}
+                disabled={!isStreaming}
+              >
+                📸 Capture Photo
+              </button>
+            ) : (
+              <button
+                onClick={handleReset}
+                className={styles.resetButton}
+              >
+                🔄 Retake Photo
+              </button>
+            )}
           </div>
-        )}
+        </div>
+
+        {/* Right Side - Try-On Result */}
+        <div className={styles.resultSection}>
+          <h3>✨ Virtual Try-On Result</h3>
+          <div className={styles.resultContainer}>
+            {!capturedImage && (
+              <div className={styles.placeholder}>
+                <div className={styles.placeholderIcon}>📸</div>
+                <p>Capture a photo to get started</p>
+              </div>
+            )}
+
+            {capturedImage && !tryOnResult && !isProcessing && (
+              <div className={styles.placeholder}>
+                <div className={styles.placeholderIcon}>💄</div>
+                <p>Ready for virtual try-on!</p>
+                <button
+                  onClick={handleTryOn}
+                  className={styles.tryOnButton}
+                  disabled={!makeupProducts}
+                >
+                  {makeupProducts ? '✨ Apply Makeup' : '⚠️ No makeup selected'}
+                </button>
+              </div>
+            )}
+
+            {isProcessing && (
+              <div className={styles.processing}>
+                <div className={styles.spinner}></div>
+                <p>Generating your virtual try-on...</p>
+                <p className={styles.hint}>Using AI to apply makeup...</p>
+              </div>
+            )}
+
+            {tryOnResult && (
+              <div className={styles.result}>
+                <img
+                  src={tryOnResult.imageUrl}
+                  alt="Virtual Try-On Result"
+                  className={styles.resultImage}
+                />
+                <div className={styles.resultInfo}>
+                  <h4>Expected Results:</h4>
+                  <ul>
+                    {tryOnResult.expectedChanges.map((change, idx) => (
+                      <li key={idx}>{change}</li>
+                    ))}
+                  </ul>
+                  <button
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = tryOnResult.imageUrl;
+                      link.download = 'virtual-tryon-result.png';
+                      link.click();
+                    }}
+                    className={styles.downloadButton}
+                  >
+                    💾 Download Result
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
-      <div className={styles.info}>
-        <h3>3D Virtual Try-On</h3>
-        <p>
-          {isTracking
-            ? 'Face tracked! Makeup is rendered in real-time 3D.'
-            : 'Starting camera and face tracking...'}
-        </p>
+      <div className={styles.instructions}>
+        <h4>How to use:</h4>
+        <ol>
+          <li>📸 Click "Apply Demo Makeup" in the info card above</li>
+          <li>📷 Allow camera access when prompted</li>
+          <li>😊 Position your face in the camera view</li>
+          <li>📸 Click "Capture Photo"</li>
+          <li>✨ Click "Apply Makeup" to see AI-generated result</li>
+          <li>💾 Download your result!</li>
+        </ol>
       </div>
     </div>
   );

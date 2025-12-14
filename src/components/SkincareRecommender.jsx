@@ -28,6 +28,17 @@ export default function SkincareRecommender({ onClose }) {
   const [tryOnResult, setTryOnResult] = useState(null);
   const [loadingTryOn, setLoadingTryOn] = useState(false);
 
+  // Current products state
+  const [showCurrentProducts, setShowCurrentProducts] = useState(false);
+  const [currentProducts, setCurrentProducts] = useState({
+    cleanser: '',
+    toner: '',
+    serum: '',
+    moisturizer: '',
+    sunscreen: '',
+    other: ''
+  });
+
   // Handle image upload and compression
   const compressImage = async (file) => {
     return new Promise((resolve) => {

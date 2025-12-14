@@ -1,7 +1,10 @@
 /**
  * Virtual Try-On Service
- * Uses Gemini API to visualize how recommended products would look
+ * Uses Gemini 2.5 Flash Image model to generate actual preview images
  */
+
+// Use the production-ready image generation model
+const GEMINI_IMAGE_MODEL = 'gemini-2.5-flash-image';
 
 /**
  * Get Gemini API key
@@ -67,7 +70,7 @@ Generate a realistic result showing healthier, well-cared-for skin after consist
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_IMAGE_MODEL}:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -85,7 +88,9 @@ Generate a realistic result showing healthier, well-cared-for skin after consist
           }],
           generationConfig: {
             temperature: 0.4,
-            maxOutputTokens: 1000,
+            maxOutputTokens: 4096,
+            // Critical: Tell the model to output images
+            responseModalities: ["Text", "Image"],
           },
         }),
       }
@@ -98,15 +103,43 @@ Generate a realistic result showing healthier, well-cared-for skin after consist
 
     const data = await response.json();
 
-    // Note: Gemini 2.0 Flash doesn't generate images, it analyzes them
-    // For image generation, we'd need to use Imagen or another service
-    // For now, return a descriptive result
-    const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    // Extract the generated image and description
+    let imageUrl = null;
+    let description = null;
+    let expectedChanges = [];
+
+    if (data.candidates && data.candidates[0]?.content?.parts) {
+      for (const part of data.candidates[0].content.parts) {
+        if (part.inlineData) {
+          // Got an actual image!
+          imageUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+        } else if (part.text) {
+          description = part.text;
+          // Try to extract expected changes from text
+          const changesList = part.text.match(/[-•]\s+(.+)/g);
+          if (changesList) {
+            expectedChanges = changesList.map(item => item.replace(/^[-•]\s+/, '').trim());
+          }
+        }
+      }
+    }
+
+    // If no image was generated, throw an error
+    if (!imageUrl) {
+      throw new Error('Failed to generate preview image. Please try again.');
+    }
 
     return {
       success: true,
-      description: textResponse || 'Your skin would show visible improvements with consistent use of this routine.',
-      note: 'Virtual try-on simulation'
+      imageUrl,
+      description: description || 'Your skin would show visible improvements with consistent use of this routine.',
+      expectedChanges: expectedChanges.length > 0 ? expectedChanges : [
+        'Reduced visible concerns',
+        'Improved skin texture and smoothness',
+        'Better hydration and glow',
+        'More even skin tone',
+        'Healthier, more radiant appearance'
+      ]
     };
 
   } catch (error) {
@@ -154,7 +187,7 @@ Create a realistic result showing how this person looks with these exact product
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_IMAGE_MODEL}:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -172,7 +205,9 @@ Create a realistic result showing how this person looks with these exact product
           }],
           generationConfig: {
             temperature: 0.4,
-            maxOutputTokens: 1000,
+            maxOutputTokens: 4096,
+            // Critical: Tell the model to output images
+            responseModalities: ["Text", "Image"],
           },
         }),
       }
@@ -184,12 +219,43 @@ Create a realistic result showing how this person looks with these exact product
     }
 
     const data = await response.json();
-    const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    // Extract the generated image and description
+    let imageUrl = null;
+    let description = null;
+    let expectedChanges = [];
+
+    if (data.candidates && data.candidates[0]?.content?.parts) {
+      for (const part of data.candidates[0].content.parts) {
+        if (part.inlineData) {
+          // Got an actual image!
+          imageUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+        } else if (part.text) {
+          description = part.text;
+          // Try to extract expected changes from text
+          const changesList = part.text.match(/[-•]\s+(.+)/g);
+          if (changesList) {
+            expectedChanges = changesList.map(item => item.replace(/^[-•]\s+/, '').trim());
+          }
+        }
+      }
+    }
+
+    // If no image was generated, throw an error
+    if (!imageUrl) {
+      throw new Error('Failed to generate preview image. Please try again.');
+    }
 
     return {
       success: true,
-      description: textResponse || 'Your makeup would look beautiful with these specific products.',
-      note: 'Virtual try-on simulation'
+      imageUrl,
+      description: description || 'Your makeup would look beautiful with these specific products.',
+      expectedChanges: expectedChanges.length > 0 ? expectedChanges : [
+        'Professional makeup application',
+        'Enhanced facial features',
+        'Polished, finished look',
+        'Product-specific colors and finishes'
+      ]
     };
 
   } catch (error) {
